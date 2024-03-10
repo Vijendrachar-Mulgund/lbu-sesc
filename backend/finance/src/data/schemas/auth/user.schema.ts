@@ -8,12 +8,19 @@ export const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, 'Please enter your email address'],
     unique: [true, 'Email already exists'],
+    validate: {
+      validator: function (v: string) {
+        const emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+        return emailRegex.test(v);
+      },
+      message: `Please enter a valid email address`,
+    },
   },
-  userId: {
+  username: {
     type: String,
-    required: [true, 'User Id is required'],
+    required: [true, 'Username is required'],
     unique: true,
   },
   password: {

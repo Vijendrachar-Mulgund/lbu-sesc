@@ -4,19 +4,28 @@ import { Model } from 'mongoose';
 
 import { SignupRequestObject } from '../data/dto';
 import { User } from '../data/types';
+import { LoginRequestObject } from '../data/dto/auth/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
-  async signUp(signUpBody: SignupRequestObject) {
+  async createNewUser(signUpBody: SignupRequestObject) {
     try {
+      const userExists = await this.userModel.findOne({
+        email: signUpBody.email,
+      });
+
+      if (userExists) {
+        throw new Error('User with ths email already exists!');
+      }
+
       const currentUsersCount =
         await this.userModel.collection.countDocuments();
-      const newUserId = `c${+currentUsersCount + 1}`;
+      const newUsername = `c${+currentUsersCount + 1}`;
 
       const createdUser = new this.userModel({
-        userId: newUserId.toString(),
+        username: newUsername.toString(),
         name: signUpBody.name,
         email: signUpBody.email,
         password: signUpBody.password,
@@ -30,8 +39,18 @@ export class AuthService {
     }
   }
 
-  login() {
-    return { message: 'Login Service' };
+  async checkExistingUser(loginBody: LoginRequestObject) {
+    try {
+      const user = await this.userModel.findOne({ email: loginBody.email });
+
+      if (!user) {
+        throw new Error('The User with this email does not exist!');
+      }
+
+      return user;
+    } catch (error) {
+      return error;
+    }
   }
 
   logout() {
