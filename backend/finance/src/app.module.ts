@@ -3,7 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { StudentModule } from './student/student.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { databaseConnectionUrl } from './utils/config/mongodb';
+import { databaseConnectionUrl } from './utils';
 
 @Module({
   imports: [

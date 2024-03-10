@@ -1,14 +1,36 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Request, Response } from 'express';
+import { JwtService } from '@nestjs/jwt';
+
 import { AuthService } from './auth.service';
-import { SignupDto } from 'src/utils/dto/signup.dto';
+import { SignupRequestObject } from '../data/dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post('signup')
-  signUp(@Body() signupDto: SignupDto) {
-    return this.authService.signUp(signupDto);
+  async signUp(@Req() request: Request, @Res() response: Response) {
+    const newUser = await this.authService.signUp(
+      request.body as SignupRequestObject,
+    );
+
+    const jwt = await this.jwtService.signAsync({ id: newUser.id });
+
+    const user = {
+      name: newUser.name,
+      email: newUser.email,
+      userId: newUser.userId,
+    };
+    response.status(201).json({
+      status: 'success',
+      message: 'User created successfully',
+      token: jwt,
+      user,
+    });
   }
 
   @Post('login')
