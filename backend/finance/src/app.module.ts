@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { StudentModule } from './student/student.module';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { databaseConnectionUrl } from './utils';
+import { InvoiceModule } from './invoice/invoice.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { databaseConnectionUrl } from './utils';
 
     // Module Imports
     AuthModule,
-    StudentModule,
+    InvoiceModule,
   ],
 })
 export class AppModule {}

@@ -1,11 +1,20 @@
-import { Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { SignupRequestObject } from '../data/dto';
 import { LoginRequestObject } from '../data/dto';
 import { comparePassword, restError } from '../utils';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -55,7 +64,7 @@ export class AuthController {
         throw new Error('Invalid username or password password');
       }
 
-      const isPasswordValid = comparePassword(
+      const isPasswordValid = await comparePassword(
         request.body.password,
         existingUser.password,
       );
@@ -64,7 +73,7 @@ export class AuthController {
         throw new Error('Invalid username or password password');
       }
 
-      const jwt = this.jwtService.sign({ id: existingUser.id });
+      const jwt = await this.jwtService.signAsync({ id: existingUser.id });
 
       const user = {
         name: existingUser.name,
@@ -81,6 +90,15 @@ export class AuthController {
     } catch (error) {
       return restError(response, error, HttpStatus.UNAUTHORIZED);
     }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Req() request: Request, @Res() response: Response) {
+    return response.status(200).json({
+      status: 'success',
+      message: 'User profile retrieved successfully',
+    });
   }
 
   @Post('logout')
