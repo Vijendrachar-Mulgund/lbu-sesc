@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { SignupRequestObject } from '../data/dto';
 import { User } from '../data/types';
 import { LoginRequestObject } from '../data/dto/auth/login.dto';
+import { generateUsername } from '../utils';
 
 @Injectable()
 export class AuthService {
@@ -20,12 +21,8 @@ export class AuthService {
         throw new Error('User with ths email already exists!');
       }
 
-      const currentUsersCount =
-        await this.userModel.collection.countDocuments();
-      const newUsername = `c${+currentUsersCount + 1}`;
-
       const createdUser = new this.userModel({
-        username: newUsername.toString(),
+        username: generateUsername(),
         name: signUpBody.name,
         email: signUpBody.email,
         password: signUpBody.password,

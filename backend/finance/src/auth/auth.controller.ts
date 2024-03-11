@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 
@@ -14,7 +6,7 @@ import { AuthService } from './auth.service';
 import { SignupRequestObject } from '../data/dto';
 import { LoginRequestObject } from '../data/dto';
 import { comparePassword, restError } from '../utils';
-import { AuthGuard } from './auth.guard';
+import { User } from '../data/types';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +18,7 @@ export class AuthController {
   @Post('signup')
   async signup(@Req() request: Request, @Res() response: Response) {
     try {
-      const newUser = await this.authService.createNewUser(
+      const newUser: User = await this.authService.createNewUser(
         request.body as SignupRequestObject,
       );
 
@@ -34,7 +26,7 @@ export class AuthController {
         throw new Error(newUser?.message);
       }
 
-      const jwt = await this.jwtService.signAsync({ id: newUser.id });
+      const jwt = await this.jwtService.signAsync({ id: newUser.username });
 
       const user = {
         name: newUser.name,
@@ -56,7 +48,7 @@ export class AuthController {
   @Post('login')
   async login(@Req() request: Request, @Res() response: Response) {
     try {
-      const existingUser = await this.authService.checkExistingUser(
+      const existingUser: User = await this.authService.checkExistingUser(
         request.body as LoginRequestObject,
       );
 
@@ -73,7 +65,9 @@ export class AuthController {
         throw new Error('Invalid username or password password');
       }
 
-      const jwt = await this.jwtService.signAsync({ id: existingUser.id });
+      const jwt = await this.jwtService.signAsync({
+        id: existingUser.username,
+      });
 
       const user = {
         name: existingUser.name,
@@ -81,7 +75,7 @@ export class AuthController {
         username: existingUser.username,
       };
 
-      return response.status(200).json({
+      return response.status(HttpStatus.OK).json({
         status: 'success',
         message: 'User logged in successfully',
         token: jwt,
@@ -90,15 +84,6 @@ export class AuthController {
     } catch (error) {
       return restError(response, error, HttpStatus.UNAUTHORIZED);
     }
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Req() request: Request, @Res() response: Response) {
-    return response.status(200).json({
-      status: 'success',
-      message: 'User profile retrieved successfully',
-    });
   }
 
   @Post('logout')

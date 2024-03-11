@@ -11,3 +11,9 @@ export const comparePassword = async (
 ): Promise<boolean> => {
   return bcrypt.compare(candidatePassword, userPassword);
 };
+
+export const generateUsername = (): string => {
+  const max = 999999999;
+  const number = Math.round(Math.random() * max);
+  return `c${number}`;
+};
