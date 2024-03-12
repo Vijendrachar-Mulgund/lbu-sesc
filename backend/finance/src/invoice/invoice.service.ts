@@ -29,4 +29,8 @@ export class InvoiceService {
   getInvoices(username: string): Promise<Invoice[]> {
     return this.invoiceModel.find({ username: username }).exec();
   }
+
+  getInvoiceById(invoiceId: string, username: string): Promise<Invoice> {
+    return this.invoiceModel.findOne({ _id: invoiceId, username }).exec();
+  }
 }

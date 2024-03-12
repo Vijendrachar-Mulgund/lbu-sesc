@@ -78,8 +78,24 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Get(':invoiceId')
-  async getInvoice(@Param('invoiceId') invoiceId: string) {
-    return `This is invoice ${invoiceId}!'`;
+  async getInvoice(@Req() request: Request, @Res() response: Response) {
+    try {
+      const username: string = request.body.token.id;
+      const invoiceId: string = request.params.invoiceId;
+
+      const invoice: Invoice = await this.invoiceService.getInvoiceById(
+        invoiceId,
+        username,
+      );
+
+      response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'Invoice retrieved successfully',
+        invoice,
+      });
+    } catch (error) {
+      restError(response, error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @UseGuards(AuthGuard)
