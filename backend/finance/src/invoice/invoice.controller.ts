@@ -21,8 +21,21 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Get()
-  async getInvoices() {
-    return 'This is all the invoices!';
+  async getInvoices(@Req() request: Request, @Res() response: Response) {
+    try {
+      const username: string = request.body.token.id;
+
+      const invoices: Invoice[] =
+        await this.invoiceService.getInvoices(username);
+
+      response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'Invoices list updated successfully',
+        invoices,
+      });
+    } catch (error) {
+      restError(response, error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @UseGuards(AuthGuard)
@@ -31,21 +44,28 @@ export class InvoiceController {
     try {
       const requestBody: Invoice = request.body;
 
+      console.log(requestBody);
       if (!requestBody) {
         throw new Error('Invalid request body');
       }
+      const username: string = request.body.token.id;
 
-      const newInvoice = await this.invoiceService.createInvoice(requestBody);
+      const newInvoice: Invoice = await this.invoiceService.createInvoice(
+        requestBody,
+        username,
+      );
 
       response.status(HttpStatus.CREATED).json({
         status: 'success',
+        message: 'Invoice created successfully',
         invoice: {
           invoiceId: newInvoice.id,
-          studentId: newInvoice.studentId,
+          username: newInvoice.username,
           amount: newInvoice.amount,
           currency: newInvoice.currency,
           dueDate: newInvoice.dueDate,
           type: newInvoice.type,
+          material: newInvoice.material,
           status: newInvoice.status,
           createdAt: newInvoice.createdAt,
           updatedAt: newInvoice.updatedAt,

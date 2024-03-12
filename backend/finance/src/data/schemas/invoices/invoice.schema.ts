@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
 export const InvoiceSchema = new mongoose.Schema({
-  studentId: {
+  username: {
     type: String,
     required: true,
   },
@@ -20,6 +20,10 @@ export const InvoiceSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
+  },
+  material: {
+    type: Object,
+    required: false,
   },
   status: {
     type: String,
