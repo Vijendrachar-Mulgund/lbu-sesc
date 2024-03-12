@@ -100,8 +100,21 @@ export class InvoiceController {
 
   @UseGuards(AuthGuard)
   @Post(':invoiceId/pay')
-  async payInvoice(@Param('invoiceId') invoiceId: string) {
-    return `Invoice ${invoiceId} paid!`;
+  async payInvoice(@Req() request: Request, @Res() response: Response) {
+    try {
+      const username: string = request.body.token.id;
+      const invoiceId: string = request.params.invoiceId;
+
+      const invoice = await this.invoiceService.payInvoice(invoiceId, username);
+
+      response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'Invoice paid successfully',
+        invoice,
+      });
+    } catch (error) {
+      restError(response, error, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @UseGuards(AuthGuard)

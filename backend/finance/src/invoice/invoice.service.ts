@@ -33,4 +33,15 @@ export class InvoiceService {
   getInvoiceById(invoiceId: string, username: string): Promise<Invoice> {
     return this.invoiceModel.findOne({ _id: invoiceId, username }).exec();
   }
+
+  payInvoice(invoiceId: string, username: string): Promise<Invoice> {
+    const updatedInvoice = this.invoiceModel
+      .findOneAndUpdate(
+        { _id: invoiceId, username },
+        { status: 'paid', updatedAt: new Date() },
+        { new: true },
+      )
+      .exec();
+    return updatedInvoice;
+  }
 }
