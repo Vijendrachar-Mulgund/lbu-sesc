@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
   Req,
   Res,
@@ -77,6 +76,38 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard)
+  @Get('balance')
+  async getBalance(@Req() request: Request, @Res() response: Response) {
+    try {
+      const username: string = request.body.token.id;
+
+      const invoices: Invoice[] =
+        await this.invoiceService.getInvoices(username);
+
+      let balance: number = 0;
+
+      if (invoices.length === 0) {
+        balance = 0;
+      } else {
+        balance = invoices.reduce((acc, invoice) => {
+          if (invoice.status === 'outstanding') {
+            return acc + invoice.amount;
+          }
+          return acc;
+        }, 0);
+      }
+
+      response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'Balance retrieved successfully',
+        balance,
+      });
+    } catch (error) {
+      restError(response, error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @UseGuards(AuthGuard)
   @Get(':invoiceId')
   async getInvoice(@Req() request: Request, @Res() response: Response) {
     try {
@@ -115,11 +146,5 @@ export class InvoiceController {
     } catch (error) {
       restError(response, error, HttpStatus.BAD_REQUEST);
     }
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('/outstandingBalance')
-  async checkOutstandingBalance() {
-    return 'Outstanding balance checked!';
   }
 }
