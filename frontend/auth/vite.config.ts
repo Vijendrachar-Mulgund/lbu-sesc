@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     federation({
       name: "auth-app", // name of the fed group...
-      filename: "remoteEntry.js", // default file name
+      filename: "authRemoteEntry.js", // default file name
       // Modules to expose
       exposes: {
         "./App": "./src/App.tsx",
