@@ -43,7 +43,6 @@ export class InvoiceController {
     try {
       const requestBody: Invoice = request.body;
 
-      console.log(requestBody);
       if (!requestBody) {
         throw new Error('Invalid request body');
       }
