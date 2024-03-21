@@ -9,7 +9,7 @@ export default defineConfig({
     federation({
       name: "finance-app",
       remotes: {
-        AuthApp: "http://localhost:5170/assets/authRemoteEntry.js", // Remove the trailing comma here
+        AuthApp: "http://localhost:5170/assets/authRemoteEntry.js",
       },
       shared: ["react", "react-dom"],
     }),
