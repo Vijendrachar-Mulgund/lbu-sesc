@@ -2,12 +2,12 @@ package uk.ac.leedsbeckett.student.mappers.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import uk.ac.leedsbeckett.student.domain.dto.UserDto;
+import uk.ac.leedsbeckett.student.domain.dto.SignupRequestDTO;
 import uk.ac.leedsbeckett.student.domain.entities.UserEntity;
 import uk.ac.leedsbeckett.student.mappers.Mapper;
 
 @Component
-public class UserMapperImpl implements Mapper<UserEntity, UserDto> {
+public class UserMapperImpl implements Mapper<UserEntity, SignupRequestDTO> {
 
     private final ModelMapper modelMapper;
 
@@ -16,12 +16,12 @@ public class UserMapperImpl implements Mapper<UserEntity, UserDto> {
     }
 
     @Override
-    public UserDto mapTo(UserEntity userEntity) {
-        return modelMapper.map(userEntity, UserDto.class);
+    public SignupRequestDTO mapTo(UserEntity userEntity) {
+        return modelMapper.map(userEntity, SignupRequestDTO.class);
     }
 
     @Override
-    public UserEntity mapFrom(UserDto userDto) {
-        return modelMapper.map(userDto, UserEntity.class );
+    public UserEntity mapFrom(SignupRequestDTO signupRequestDTO) {
+        return modelMapper.map(signupRequestDTO, UserEntity.class );
     }
 }

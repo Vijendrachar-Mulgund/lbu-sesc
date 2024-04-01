@@ -8,11 +8,11 @@
       <jdbc-url>mongodb+srv://clusternode.8uai9qi.mongodb.net/ums-finance</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="postgres@localhost" uuid="da7e75fd-18ad-4e15-b0b5-0103e054f152">
+    <data-source source="LOCAL" name="student@localhost" uuid="a15083b0-9374-4489-83a7-5e59263c0350">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/student</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

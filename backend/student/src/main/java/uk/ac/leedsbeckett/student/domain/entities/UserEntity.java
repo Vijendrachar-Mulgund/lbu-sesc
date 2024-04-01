@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,18 +20,18 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String userName;
+    private String username;
 
     private String email;
 
-    private String firstName;
+    private String firstname;
 
-    private String lastName;
+    private String lastname;
 
     private String password;
 
-    private Integer createdAt;
+    private Date createdAt;
 
-    private Integer updatedAt;
+    private Date updatedAt;
 
 }

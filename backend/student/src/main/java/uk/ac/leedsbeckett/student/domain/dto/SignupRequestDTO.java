@@ -9,20 +9,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
-    private String id;
-
-    private String userName;
+public class SignupRequestDTO {
+    private String username;
 
     private String email;
 
-    private String firstName;
+    private String firstname;
 
-    private String lastName;
+    private String lastname;
 
     private String password;
-
-    private Integer createdAt;
-
-    private Integer updatedAt;
 }
