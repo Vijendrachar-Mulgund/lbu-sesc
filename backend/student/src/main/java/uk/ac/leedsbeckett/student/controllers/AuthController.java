@@ -17,8 +17,8 @@ import uk.ac.leedsbeckett.student.services.UserService;
 public class AuthController {
     private final UserService userService;
 
-    @PostMapping(path = "/register")
-    public ResponseEntity<AuthenticationResponseDTO> registerNewUser(@RequestBody RegisterNewUserRequestDTO request) {
+    @PostMapping(path = "/signup")
+    public ResponseEntity<AuthenticationResponseDTO> createNewUser(@RequestBody RegisterNewUserRequestDTO request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
