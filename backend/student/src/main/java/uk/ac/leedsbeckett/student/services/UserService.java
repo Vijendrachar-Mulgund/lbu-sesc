@@ -1,7 +1,9 @@
 package uk.ac.leedsbeckett.student.services;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uk.ac.leedsbeckett.student.domain.dto.AuthenticationResponseDTO;
@@ -13,6 +15,7 @@ import uk.ac.leedsbeckett.student.domain.enums.Role;
 import uk.ac.leedsbeckett.student.repositories.UsersRepository;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final JWTService jwtService;
+
+    private final AuthenticationManager authenticationManager;
 
     private String generateUsername() {
         return "c" + Math.round(Math.random() * 1000000);
@@ -57,6 +62,32 @@ public class UserService {
         return AuthenticationResponseDTO.builder()
                 .status("success")
                 .message("User created successfully")
+                .token(jwtToken)
+                .user(user)
+                .build();
+    }
+
+    public AuthenticationResponseDTO logUserIn(LoginUserRequestDTO request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+        );
+
+        var existingUser = usersRepository.findByEmail(request.getEmail()).orElseThrow();
+
+        // Generate new JWT token
+        var jwtToken = jwtService.generateJWTToken(existingUser);
+
+        UserDetailsDTO user = UserDetailsDTO.builder()
+                .email(existingUser.getEmail())
+                .firstname(existingUser.getFirstname())
+                .lastname(existingUser.getLastname())
+                .username(existingUser.getUsername())
+                .build();
+
+        // Send the response
+        return AuthenticationResponseDTO.builder()
+                .status("success")
+                .message("User Logged in successfully")
                 .token(jwtToken)
                 .user(user)
                 .build();

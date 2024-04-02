@@ -21,4 +21,9 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDTO> registerNewUser(@RequestBody RegisterNewUserRequestDTO request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
+
+    @PostMapping(path = "/login")
+    public ResponseEntity<AuthenticationResponseDTO> userLogin(@RequestBody LoginUserRequestDTO request) {
+        return ResponseEntity.ok(userService.logUserIn(request));
+    }
 }
