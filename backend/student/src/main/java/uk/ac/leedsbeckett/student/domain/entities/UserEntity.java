@@ -19,7 +19,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "username_unique", columnNames = {"username"}),
+        @UniqueConstraint(name = "email_unique", columnNames = "email")
+})
 public class UserEntity implements UserDetails {
 
     @Id

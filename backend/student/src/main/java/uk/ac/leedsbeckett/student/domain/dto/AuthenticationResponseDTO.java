@@ -9,14 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SignupRequestDTO {
-    private String username;
+public class AuthenticationResponseDTO {
+    private String status;
 
-    private String email;
+    private String message;
 
-    private String firstname;
+    private String token;
 
-    private String lastname;
-
-    private String password;
+    private UserDetailsDTO user;
 }
