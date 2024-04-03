@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(name = "username_unique", columnNames = {"username"}),
+        @UniqueConstraint(name = "student_id_unique", columnNames = {"studentId"}),
         @UniqueConstraint(name = "email_unique", columnNames = "email")
 })
 public class UserEntity implements UserDetails {
@@ -29,7 +29,7 @@ public class UserEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String username;
+    private String studentId;
 
     private String email;
 
@@ -39,12 +39,21 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
+    private Boolean isEligibleForGraduation;
+
+    private double outstandingBillAmount;
+
     private Date createdAt;
 
     private Date updatedAt;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
     @Override
     public String getPassword() {

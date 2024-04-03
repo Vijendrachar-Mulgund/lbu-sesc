@@ -18,4 +18,8 @@ public class CourseEntity {
     private String id;
 
     private String courseName;
+
+    private String courseCode;
+
+    private String courseDescription;
 }

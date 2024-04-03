@@ -46,14 +46,29 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthenticationException.class)
-    public Map<String, String > handleAuthenticationErrors(AuthenticationException exception) {
+    public Map<String, String> handleAuthenticationErrors(AuthenticationException exception) {
         String error;
         Map<String, String> errorMessage = new HashMap<>();
 
         error = exception.getLocalizedMessage();
 
         errorMessage.put("status", "error");
-        errorMessage.put("message", "Invalid Credentials");
+        errorMessage.put("message", "Username or password is incorrect!");
+        errorMessage.put("error", error);
+
+        return errorMessage;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(RuntimeException.class)
+    public Map<String, String> handleTokenExpired(RuntimeException exception) {
+        String error;
+        Map<String, String> errorMessage = new HashMap<>();
+
+        error = exception.getLocalizedMessage();
+
+        errorMessage.put("status", "error");
+        errorMessage.put("message", "Token has expired! Please login again.");
         errorMessage.put("error", error);
 
         return errorMessage;

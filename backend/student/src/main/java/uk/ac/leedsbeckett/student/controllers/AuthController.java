@@ -27,4 +27,9 @@ public class AuthController {
     public ResponseEntity<AuthenticationResponseDTO> userLogin(@RequestBody LoginUserRequestDTO request) {
         return ResponseEntity.ok(userService.logUserIn(request));
     }
+
+    @PostMapping(path = "/logout")
+    public ResponseEntity<String> userLogout() {
+        return ResponseEntity.ok("User logged out successfully");
+    }
 }

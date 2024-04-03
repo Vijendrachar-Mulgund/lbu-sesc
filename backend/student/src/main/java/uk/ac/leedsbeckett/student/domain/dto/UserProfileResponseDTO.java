@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDetailsDTO {
-    private String firstname;
+public class UserProfileResponseDTO {
 
-    private String lastname;
+    private String status;
 
-    private String email;
+    private String message;
 
-    private String studentId;
+    private UserProfileDetailsDTO user;
 }

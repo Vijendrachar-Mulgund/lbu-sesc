@@ -5,16 +5,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDetailsDTO {
+public class UserProfileDetailsDTO {
+    private String id;
+
+    private String studentId;
+
+    private String email;
+
     private String firstname;
 
     private String lastname;
 
-    private String email;
+    private Boolean isEligibleForGraduation;
 
-    private String studentId;
+    private double outstandingBillAmount;
+
+    private Date createdAt;
 }
