@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(name = "student_id_unique", columnNames = {"studentId"}),
+        @UniqueConstraint(name = "student_id_unique", columnNames = "studentId"),
         @UniqueConstraint(name = "email_unique", columnNames = "email")
 })
 public class UserEntity implements UserDetails {
