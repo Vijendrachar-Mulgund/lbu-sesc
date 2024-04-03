@@ -1,5 +1,6 @@
 package uk.ac.leedsbeckett.student.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping(path = "/signup")
-    public ResponseEntity<AuthenticationResponseDTO> createNewUser(@RequestBody RegisterNewUserRequestDTO request) {
+    public ResponseEntity<AuthenticationResponseDTO> createNewUser(@RequestBody @Valid RegisterNewUserRequestDTO request) {
         return ResponseEntity.ok(userService.createUser(request));
     }
 
