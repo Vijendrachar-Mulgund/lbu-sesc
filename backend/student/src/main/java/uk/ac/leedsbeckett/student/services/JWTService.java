@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import uk.ac.leedsbeckett.student.domain.entities.UserEntity;
@@ -18,7 +19,8 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    private static final String SECRET_KEY = "f42610fc41533a22628d77e9731178cadcbd6c5a071f93f6906d42e68a1f342b";
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
 
     private static final Integer hours24 = 1000 * 60 * 60 * 24;
 
