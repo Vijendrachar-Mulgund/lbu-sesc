@@ -1,4 +1,4 @@
-package uk.ac.leedsbeckett.student.domain.dto;
+package uk.ac.leedsbeckett.student.domain.dto.userDTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,11 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserProfileResponseDTO {
-
+public class AuthenticationResponseDTO {
     private String status;
 
     private String message;
 
-    private UserProfileDetailsDTO user;
+    private String token;
+
+    private UserDetailsDTO user;
 }

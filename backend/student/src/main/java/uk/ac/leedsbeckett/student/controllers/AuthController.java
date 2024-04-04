@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.ac.leedsbeckett.student.domain.dto.AuthenticationResponseDTO;
-import uk.ac.leedsbeckett.student.domain.dto.LoginUserRequestDTO;
-import uk.ac.leedsbeckett.student.domain.dto.RegisterNewUserRequestDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.AuthenticationResponseDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.LoginUserRequestDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.RegisterNewUserRequestDTO;
 import uk.ac.leedsbeckett.student.services.UserService;
 
 @RestController

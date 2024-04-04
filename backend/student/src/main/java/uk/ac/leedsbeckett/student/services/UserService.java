@@ -7,7 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uk.ac.leedsbeckett.student.domain.dto.*;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.*;
 import uk.ac.leedsbeckett.student.domain.entities.UserEntity;
 import uk.ac.leedsbeckett.student.domain.enums.Role;
 import uk.ac.leedsbeckett.student.repositories.UsersRepository;

@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.ac.leedsbeckett.student.domain.enums.Currency;
+import uk.ac.leedsbeckett.student.domain.enums.Department;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +23,16 @@ public class CourseEntity {
 
     private String courseName;
 
-    private String courseCode;
-
     private String courseDescription;
+
+    private Double fees;
+
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
+
+    @Enumerated(EnumType.STRING)
+    private Department department;
+
+    @ManyToMany(mappedBy = "enrolledCourses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UserEntity> enrolledStudents;
 }

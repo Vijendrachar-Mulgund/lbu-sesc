@@ -13,6 +13,7 @@ import uk.ac.leedsbeckett.student.domain.enums.Role;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -42,6 +43,19 @@ public class UserEntity implements UserDetails {
     private Boolean isEligibleForGraduation;
 
     private double outstandingBillAmount;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "enrolled_courses",
+            joinColumns = {
+                    @JoinColumn(name = "student_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "course_id", referencedColumnName = "id")
+            }
+
+    )
+    private Set<CourseEntity> enrolledCourses;
 
     private Date createdAt;
 

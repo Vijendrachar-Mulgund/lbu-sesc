@@ -1,4 +1,4 @@
-package uk.ac.leedsbeckett.student.domain.dto;
+package uk.ac.leedsbeckett.student.domain.dto.userDTOs;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

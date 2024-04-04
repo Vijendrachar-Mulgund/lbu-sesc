@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.ac.leedsbeckett.student.domain.dto.UserProfileResponseDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.UserProfileResponseDTO;
 import uk.ac.leedsbeckett.student.services.UserService;
 
 @RestController
