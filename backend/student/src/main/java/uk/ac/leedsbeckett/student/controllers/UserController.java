@@ -21,5 +21,4 @@ public class UserController {
     public ResponseEntity<UserProfileResponseDTO> getGraduationStatus(@RequestHeader HttpHeaders header) {
         return ResponseEntity.ok(userService.getUserProfileDetails(header));
     }
-
 }

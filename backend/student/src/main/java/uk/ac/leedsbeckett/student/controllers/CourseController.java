@@ -2,10 +2,8 @@ package uk.ac.leedsbeckett.student.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import uk.ac.leedsbeckett.student.domain.dto.CourseDTOs.AllCoursesResponseDTO;
 import uk.ac.leedsbeckett.student.domain.dto.CourseDTOs.CreateNewCourseRequestDTO;
 import uk.ac.leedsbeckett.student.services.CourseService;
 
@@ -19,5 +17,10 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<String> createCourse(@RequestBody CreateNewCourseRequestDTO request) {
         return ResponseEntity.ok(CourseService.createNewCourse(request));
+    }
+
+    @GetMapping
+    public ResponseEntity<AllCoursesResponseDTO> getAllCourses() {
+        return ResponseEntity.ok(CourseService.getAllCourses());
     }
 }
