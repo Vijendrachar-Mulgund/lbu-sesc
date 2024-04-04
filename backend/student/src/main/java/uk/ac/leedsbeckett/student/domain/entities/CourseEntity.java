@@ -1,16 +1,15 @@
 package uk.ac.leedsbeckett.student.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import uk.ac.leedsbeckett.student.domain.enums.Currency;
 import uk.ac.leedsbeckett.student.domain.enums.Department;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,5 +33,6 @@ public class CourseEntity {
     private Department department;
 
     @ManyToMany(mappedBy = "enrolledCourses", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<UserEntity> enrolledStudents;
 }
