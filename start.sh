@@ -9,5 +9,4 @@ function open_tab() {
 current_dir=$(pwd)
 
 # Start React servers in different tabs
-open_tab "$current_dir/frontend/student" "npm run dev"
-open_tab "$current_dir/frontend/finance" "npm run dev"
+open_tab "$current_dir/backend/student" "docker-compose up db -d && ./mvnw clean package && docker-compose up api"
