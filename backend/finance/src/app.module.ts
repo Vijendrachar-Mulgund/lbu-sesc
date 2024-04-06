@@ -9,7 +9,7 @@ import { InvoiceModule } from './invoice/invoice.module';
   imports: [
     // Environment variables configuration
     ConfigModule.forRoot({
-      envFilePath: ['.env.local'],
+      envFilePath: ['.env'],
       isGlobal: true,
     }),
 
