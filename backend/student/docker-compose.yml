@@ -15,7 +15,7 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - postgre_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   api:
     build:
@@ -25,17 +25,19 @@ services:
     depends_on:
       - db
     environment:
-      server.port: ${SERVER_PORT}
-      spring.datasource.url: ${DATASOURCE_URL}/${DATABASE_NAME}
-      spring.datasource.username: ${DATABASE_USER}
-      spring.datasource.password: ${DATABASE_PASSWORD}
-      spring.datasource.driver-class-name: ${DATABASE_DRIVER_CLASS_NAME}
-      spring.jpa.hibernate.ddl-auto: ${SPRING_DATA_JPA_DDL}
-      spring.jpa.show-sql: ${SPRING_SHOW_SQL}
-      spring.jpa.database: ${SPRING_DATA_JPA_DATABASE}
-      spring.jpa.database-platform: ${SPRING_DATABASE_PLATFORM}
-      jwt.secret: ${JWT_SECRET}
+      SERVER_PORT: ${SERVER_PORT}
+      SPRING_DATASOURCE_URL: ${DATASOURCE_URL}/${DATABASE_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DATABASE_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DATABASE_PASSWORD}
+      SPRING_DATASOURCE_DRIVERCLASSNAME: ${DATABASE_DRIVER_CLASS_NAME}
+      SPRING_JPA_HIBERNATE_DDL-AUTO: ${SPRING_DATA_JPA_DDL}
+      SPRING_JPA_DATABASE: ${SPRING_DATA_JPA_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - student_api:/app
 
 volumes:
-  postgre_data:
+  postgres_data:
+    driver: local
+  student_api:
     driver: local
