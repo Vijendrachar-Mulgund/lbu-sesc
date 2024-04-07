@@ -1,6 +1,6 @@
 export type Invoice = {
   id: string;
-  username: string;
+  studentId: string;
   amount: number;
   currency: 'GBP' | 'INR';
   dueDate: Date;

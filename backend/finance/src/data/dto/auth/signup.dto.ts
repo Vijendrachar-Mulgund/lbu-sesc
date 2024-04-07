@@ -2,7 +2,10 @@ import { IsEmail, IsString, MinLength } from 'class-validator';
 
 export class SignupRequestObject {
   @IsString()
-  name: string;
+  firstname: string;
+
+  @IsString()
+  lastname: string;
 
   @IsEmail()
   email: string;
@@ -10,4 +13,7 @@ export class SignupRequestObject {
   @IsString()
   @MinLength(8)
   password: string;
+
+  @IsString()
+  studentId: string;
 }

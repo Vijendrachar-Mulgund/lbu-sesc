@@ -1,8 +1,13 @@
 import * as mongoose from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { role } from '../../enums';
 
 export const UserSchema = new mongoose.Schema({
-  name: {
+  firstname: {
+    type: String,
+    required: true,
+  },
+  lastname: {
     type: String,
     required: true,
   },
@@ -18,10 +23,16 @@ export const UserSchema = new mongoose.Schema({
       message: `Please enter a valid email address`,
     },
   },
-  username: {
+  studentId: {
     type: String,
-    required: [true, 'Username is required'],
+    required: [true, 'studentId is required'],
     unique: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    enum: [role.ADMIN, role.STUDENT, role.FACULTY],
+    default: role.STUDENT,
   },
   password: {
     type: String,
@@ -29,11 +40,11 @@ export const UserSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
   updatedAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
 });
 

@@ -8,7 +8,7 @@ import { LoginRequestObject } from '../data/dto';
 import { comparePassword, restError } from '../utils';
 import { User } from '../data/types';
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
@@ -26,12 +26,13 @@ export class AuthController {
         throw new Error(newUser?.message);
       }
 
-      const jwt = await this.jwtService.signAsync({ id: newUser.username });
+      const jwt = await this.jwtService.signAsync({ sub: newUser.email });
 
       const user = {
-        name: newUser.name,
+        firstname: newUser.firstname,
+        lastname: newUser.lastname,
         email: newUser.email,
-        username: newUser.username,
+        studentId: newUser.studentId,
       };
 
       response.status(HttpStatus.CREATED).json({
@@ -66,13 +67,14 @@ export class AuthController {
       }
 
       const jwt = await this.jwtService.signAsync({
-        id: existingUser.username,
+        sub: existingUser.email,
       });
 
       const user = {
-        name: existingUser.name,
+        firstname: existingUser.firstname,
+        lastname: existingUser.lastname,
         email: existingUser.email,
-        username: existingUser.username,
+        studentId: existingUser.studentId,
       };
 
       return response.status(HttpStatus.OK).json({

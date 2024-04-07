@@ -1,7 +1,8 @@
 import * as mongoose from 'mongoose';
+import { currencies, invoiceStatus } from '../../enums';
 
 export const InvoiceSchema = new mongoose.Schema({
-  username: {
+  studentId: {
     type: String,
     required: true,
   },
@@ -12,6 +13,8 @@ export const InvoiceSchema = new mongoose.Schema({
   currency: {
     type: String,
     required: true,
+    enum: [currencies.GBP, currencies.INR],
+    default: currencies.GBP,
   },
   dueDate: {
     type: Date,
@@ -28,6 +31,11 @@ export const InvoiceSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
+    enum: [
+      invoiceStatus.OUTSTANDING,
+      invoiceStatus.PAID,
+      invoiceStatus.CANCELLED,
+    ],
   },
   createdAt: {
     type: Date,

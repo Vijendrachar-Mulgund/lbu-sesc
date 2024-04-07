@@ -14,7 +14,7 @@ import { Invoice } from '../data/types';
 import { restError } from '../utils';
 import { InvoiceService } from './invoice.service';
 
-@Controller('invoice')
+@Controller('api/invoice')
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) {}
 
@@ -22,10 +22,10 @@ export class InvoiceController {
   @Get()
   async getInvoices(@Req() request: Request, @Res() response: Response) {
     try {
-      const username: string = request.body.token.id;
+      const studentId: string = request.body.token.sub;
 
       const invoices: Invoice[] =
-        await this.invoiceService.getInvoices(username);
+        await this.invoiceService.getInvoices(studentId);
 
       response.status(HttpStatus.OK).json({
         status: 'success',
@@ -38,7 +38,7 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('create')
+  @Post()
   async createInvoice(@Req() request: Request, @Res() response: Response) {
     try {
       const requestBody: Invoice = request.body;
@@ -46,11 +46,11 @@ export class InvoiceController {
       if (!requestBody) {
         throw new Error('Invalid request body');
       }
-      const username: string = request.body.token.id;
+      const studentId: string = request.body.token.sub;
 
       const newInvoice: Invoice = await this.invoiceService.createInvoice(
         requestBody,
-        username,
+        studentId,
       );
 
       response.status(HttpStatus.CREATED).json({
@@ -58,7 +58,7 @@ export class InvoiceController {
         message: 'Invoice created successfully',
         invoice: {
           invoiceId: newInvoice.id,
-          username: newInvoice.username,
+          studentId: newInvoice.studentId,
           amount: newInvoice.amount,
           currency: newInvoice.currency,
           dueDate: newInvoice.dueDate,
@@ -129,7 +129,7 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard)
-  @Post(':invoiceId/pay')
+  @Post('pay/:invoiceId')
   async payInvoice(@Req() request: Request, @Res() response: Response) {
     try {
       const username: string = request.body.token.id;

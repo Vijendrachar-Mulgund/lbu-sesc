@@ -22,8 +22,9 @@ export class AuthService {
       }
 
       const createdUser = new this.userModel({
-        username: generateUsername(),
-        name: signUpBody.name,
+        studentId: signUpBody.studentId,
+        firstname: signUpBody.firstname,
+        lastname: signUpBody.lastname,
         email: signUpBody.email,
         password: signUpBody.password,
         createdAt: new Date(),
