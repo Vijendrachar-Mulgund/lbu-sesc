@@ -2,6 +2,7 @@ version: "3.1"
 
 services:
   db:
+    container_name: postgres-db
     image: postgres
     ports:
       - "5432:5432"
@@ -18,6 +19,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   api:
+    container_name: student-api
     build:
       dockerfile: Dockerfile
     ports:

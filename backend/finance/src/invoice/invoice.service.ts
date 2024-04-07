@@ -9,16 +9,21 @@ import { invoiceStatus } from '../data/enums';
 export class InvoiceService {
   constructor(@InjectModel('Invoices') private invoiceModel: Model<Invoice>) {}
 
-  createInvoice(invoice: Invoice, studentId: string): Promise<Invoice> {
+  getInvoices(studentEmail: string): Promise<Invoice[]> {
+    return this.invoiceModel.find({ email: studentEmail }).exec();
+  }
+
+  createInvoice(invoice: Invoice, studentEmail: string): Promise<Invoice> {
     const dueDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
 
     const newInvoice = new this.invoiceModel({
-      studentId: studentId,
+      studentId: invoice.studentId,
+      email: studentEmail,
       amount: invoice.amount,
       currency: invoice.currency,
       type: invoice.type,
       status: invoiceStatus.OUTSTANDING,
-      material: invoice.material,
+      title: invoice.title,
       dueDate: dueDate,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -27,18 +32,16 @@ export class InvoiceService {
     return this.invoiceModel.create(newInvoice);
   }
 
-  getInvoices(studentId: string): Promise<Invoice[]> {
-    return this.invoiceModel.find({ studentId: studentId }).exec();
+  getInvoiceById(invoiceId: string, studentEmail: string): Promise<Invoice> {
+    return this.invoiceModel
+      .findOne({ _id: invoiceId, email: studentEmail })
+      .exec();
   }
 
-  getInvoiceById(invoiceId: string, username: string): Promise<Invoice> {
-    return this.invoiceModel.findOne({ _id: invoiceId, username }).exec();
-  }
-
-  payInvoice(invoiceId: string, username: string): Promise<Invoice> {
+  payInvoice(invoiceId: string, studentEmail: string): Promise<Invoice> {
     const updatedInvoice = this.invoiceModel
       .findOneAndUpdate(
-        { _id: invoiceId, username },
+        { _id: invoiceId, email: studentEmail },
         { status: invoiceStatus.PAID, updatedAt: new Date() },
         { new: true },
       )

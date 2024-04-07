@@ -13,6 +13,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { Invoice } from '../data/types';
 import { restError } from '../utils';
 import { InvoiceService } from './invoice.service';
+import { invoiceStatus } from '../data/enums';
 
 @Controller('api/invoice')
 export class InvoiceController {
@@ -22,10 +23,10 @@ export class InvoiceController {
   @Get()
   async getInvoices(@Req() request: Request, @Res() response: Response) {
     try {
-      const studentId: string = request.body.token.sub;
+      const studentEmail: string = request.body.token.sub;
 
       const invoices: Invoice[] =
-        await this.invoiceService.getInvoices(studentId);
+        await this.invoiceService.getInvoices(studentEmail);
 
       response.status(HttpStatus.OK).json({
         status: 'success',
@@ -46,11 +47,11 @@ export class InvoiceController {
       if (!requestBody) {
         throw new Error('Invalid request body');
       }
-      const studentId: string = request.body.token.sub;
+      const studentEmail: string = request.body.token.sub;
 
       const newInvoice: Invoice = await this.invoiceService.createInvoice(
         requestBody,
-        studentId,
+        studentEmail,
       );
 
       response.status(HttpStatus.CREATED).json({
@@ -58,12 +59,13 @@ export class InvoiceController {
         message: 'Invoice created successfully',
         invoice: {
           invoiceId: newInvoice.id,
+          email: newInvoice.email,
           studentId: newInvoice.studentId,
           amount: newInvoice.amount,
           currency: newInvoice.currency,
           dueDate: newInvoice.dueDate,
           type: newInvoice.type,
-          material: newInvoice.material,
+          title: newInvoice.title,
           status: newInvoice.status,
           createdAt: newInvoice.createdAt,
           updatedAt: newInvoice.updatedAt,
@@ -78,18 +80,20 @@ export class InvoiceController {
   @Get('balance')
   async getBalance(@Req() request: Request, @Res() response: Response) {
     try {
-      const username: string = request.body.token.id;
+      const username: string = request.body.token.sub;
 
       const invoices: Invoice[] =
         await this.invoiceService.getInvoices(username);
 
       let balance: number = 0;
+      let currency: string = '';
 
       if (invoices.length === 0) {
         balance = 0;
       } else {
         balance = invoices.reduce((acc, invoice) => {
-          if (invoice.status === 'outstanding') {
+          if (invoice.status === invoiceStatus.OUTSTANDING) {
+            currency = invoice.currency;
             return acc + invoice.amount;
           }
           return acc;
@@ -100,6 +104,7 @@ export class InvoiceController {
         status: 'success',
         message: 'Balance retrieved successfully',
         balance,
+        currency,
       });
     } catch (error) {
       restError(response, error, HttpStatus.BAD_REQUEST);
@@ -110,12 +115,12 @@ export class InvoiceController {
   @Get(':invoiceId')
   async getInvoice(@Req() request: Request, @Res() response: Response) {
     try {
-      const username: string = request.body.token.id;
+      const studentEmail: string = request.body.token.sub;
       const invoiceId: string = request.params.invoiceId;
 
       const invoice: Invoice = await this.invoiceService.getInvoiceById(
         invoiceId,
-        username,
+        studentEmail,
       );
 
       response.status(HttpStatus.OK).json({
@@ -132,10 +137,13 @@ export class InvoiceController {
   @Post('pay/:invoiceId')
   async payInvoice(@Req() request: Request, @Res() response: Response) {
     try {
-      const username: string = request.body.token.id;
+      const studentEmail: string = request.body.token.sub;
       const invoiceId: string = request.params.invoiceId;
 
-      const invoice = await this.invoiceService.payInvoice(invoiceId, username);
+      const invoice = await this.invoiceService.payInvoice(
+        invoiceId,
+        studentEmail,
+      );
 
       response.status(HttpStatus.OK).json({
         status: 'success',
