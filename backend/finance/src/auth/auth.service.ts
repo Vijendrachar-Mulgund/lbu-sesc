@@ -5,7 +5,6 @@ import { Model } from 'mongoose';
 import { SignupRequestObject } from '../data/dto';
 import { User } from '../data/types';
 import { LoginRequestObject } from '../data/dto/auth/login.dto';
-import { generateUsername } from '../utils';
 
 @Injectable()
 export class AuthService {

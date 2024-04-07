@@ -2,12 +2,15 @@ package uk.ac.leedsbeckett.student.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.AuthenticationResponseDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.CreateNewUserDTO;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.LoginUserRequestDTO;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.RegisterNewUserRequestDTO;
 import uk.ac.leedsbeckett.student.services.UserService;
@@ -18,9 +21,30 @@ import uk.ac.leedsbeckett.student.services.UserService;
 public class AuthController {
     private final UserService userService;
 
+    @Value("${uri.base.finance}")
+    private String financeBaseURI;
+
     @PostMapping(path = "/signup")
     public ResponseEntity<AuthenticationResponseDTO> createNewUser(@RequestBody @Valid RegisterNewUserRequestDTO request) {
-        return ResponseEntity.ok(userService.createUser(request));
+        // Create new user in the student database
+        AuthenticationResponseDTO newUser = userService.createUser(request);
+
+        CreateNewUserDTO newUserDTO = CreateNewUserDTO.builder()
+                .email(request.getEmail())
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
+                .password(request.getPassword())
+                .studentId(newUser.getUser().getStudentId())
+                .build();
+
+        // Create a new User on the finance portal
+        RestTemplate restTemplate = new RestTemplate();
+        String createNewFinanceAccountURI = financeBaseURI + "/api/auth/signup";
+
+        restTemplate.postForObject(createNewFinanceAccountURI, newUserDTO, String.class);
+
+        // Sent back the response
+        return ResponseEntity.ok(newUser);
     }
 
     @PostMapping(path = "/login")
