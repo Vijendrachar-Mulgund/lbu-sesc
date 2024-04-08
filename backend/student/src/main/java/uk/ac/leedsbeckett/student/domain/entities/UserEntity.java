@@ -39,10 +39,6 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
-    private Boolean isEligibleForGraduation;
-
-    private double outstandingBillAmount;
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "enrolled_courses",

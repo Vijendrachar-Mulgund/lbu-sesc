@@ -45,7 +45,6 @@ public class UserService {
                                 .email(request.getEmail())
                                 .studentId(generateStudentId())
                                 .password(passwordEncoder.encode(request.getPassword()))
-                                .isEligibleForGraduation(false)
                                 .createdAt(new Date())
                                 .updatedAt(new Date())
                                 .role(Role.STUDENT)
@@ -85,22 +84,22 @@ public class UserService {
                 String jwtToken = jwtService.generateJWTToken(existingUser);
 
                 UserProfileDetailsDTO user = UserProfileDetailsDTO.builder()
-                        .id(existingUser.getId())
-                        .studentId(existingUser.getStudentId())
-                        .email(existingUser.getEmail())
-                        .firstname(existingUser.getFirstname())
-                        .lastname(existingUser.getLastname())
-                        .updatedAt(existingUser.getUpdatedAt())
-                        .createdAt(existingUser.getCreatedAt())
-                        .build();
+                                .id(existingUser.getId())
+                                .studentId(existingUser.getStudentId())
+                                .email(existingUser.getEmail())
+                                .firstname(existingUser.getFirstname())
+                                .lastname(existingUser.getLastname())
+                                .updatedAt(existingUser.getUpdatedAt())
+                                .createdAt(existingUser.getCreatedAt())
+                                .build();
 
                 // Send the response
                 return AuthenticationResponseDTO.builder()
-                        .status("success")
-                        .message("User Logged in successfully")
-                        .token(jwtToken)
-                        .user(user)
-                        .build();
+                                .status("success")
+                                .message("User Logged in successfully")
+                                .token(jwtToken)
+                                .user(user)
+                                .build();
         }
 
         public AuthenticationResponseDTO authenticate(HttpHeaders header) {
