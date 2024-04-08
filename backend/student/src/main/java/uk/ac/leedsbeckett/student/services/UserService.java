@@ -2,11 +2,13 @@ package uk.ac.leedsbeckett.student.services;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.*;
 import uk.ac.leedsbeckett.student.domain.entities.CourseEntity;
 import uk.ac.leedsbeckett.student.domain.entities.UserEntity;
@@ -32,6 +34,9 @@ public class UserService {
         private final JWTService jwtService;
 
         private final AuthenticationManager authenticationManager;
+
+        @Value("${uri.base.finance}")
+        private String financeBaseURI;
 
         private String generateStudentId() {
                 return "c" + Math.round(Math.random() * 1000000);
@@ -138,14 +143,32 @@ public class UserService {
                 assert jwt != null;
                 String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
 
-                Optional<UserEntity> user = usersRepository.findByEmail(studentEmail);
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
 
                 CourseEntity course = courseRepository.findById(courseId).orElseThrow();
 
-                user.map(u -> {
-                        u.getEnrolledCourses().add(course);
-                        return usersRepository.save(u);
-                });
+//                user.map(u -> {
+//                        u.getEnrolledCourses().add(course);
+//                        return usersRepository.save(u);
+//                });
+
+                user.getEnrolledCourses().add(course);
+                usersRepository.save(user);
+
+                user.setEnrolledCourses(Set.of(course));
+
+                RestTemplate restTemplate = new RestTemplate();
+                String createNewFinanceInvoiceURI = financeBaseURI + "/api/invoice/create/" + studentEmail;
+
+                CreateInvoiceDTO newInvoice = CreateInvoiceDTO.builder()
+                        .amount(course.getFees())
+                        .currency(course.getCurrency())
+                        .title(course.getCourseName())
+                        .type("TUITION")
+                        .studentId(user.getStudentId())
+                        .build();
+
+                restTemplate.postForObject(createNewFinanceInvoiceURI, newInvoice, String.class);
 
                 // Enroll the student into a course
                 return "Student enrolled into course successfully";
