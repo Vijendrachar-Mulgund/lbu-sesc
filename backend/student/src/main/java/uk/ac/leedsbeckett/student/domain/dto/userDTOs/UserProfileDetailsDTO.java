@@ -22,9 +22,7 @@ public class UserProfileDetailsDTO {
 
     private String lastname;
 
-    private Boolean isEligibleForGraduation;
-
-    private double outstandingBillAmount;
-
     private Date createdAt;
+
+    private Date updatedAt;
 }

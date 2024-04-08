@@ -56,11 +56,14 @@ public class UserService {
                 // Generate new JWT token
                 var jwtToken = jwtService.generateJWTToken(newUser);
 
-                UserDetailsDTO user = UserDetailsDTO.builder()
+                UserProfileDetailsDTO user = UserProfileDetailsDTO.builder()
+                                .id(newUser.getId())
+                                .studentId(newUser.getStudentId())
                                 .email(newUser.getEmail())
                                 .firstname(newUser.getFirstname())
                                 .lastname(newUser.getLastname())
-                                .studentId(newUser.getStudentId())
+                                .createdAt(newUser.getCreatedAt())
+                                .updatedAt(newUser.getUpdatedAt())
                                 .build();
 
                 // Send the response
@@ -81,45 +84,50 @@ public class UserService {
                 // Generate new JWT token
                 String jwtToken = jwtService.generateJWTToken(existingUser);
 
-                UserDetailsDTO user = UserDetailsDTO.builder()
-                                .email(existingUser.getEmail())
-                                .firstname(existingUser.getFirstname())
-                                .lastname(existingUser.getLastname())
-                                .studentId(existingUser.getStudentId())
-                                .build();
+                UserProfileDetailsDTO user = UserProfileDetailsDTO.builder()
+                        .id(existingUser.getId())
+                        .studentId(existingUser.getStudentId())
+                        .email(existingUser.getEmail())
+                        .firstname(existingUser.getFirstname())
+                        .lastname(existingUser.getLastname())
+                        .updatedAt(existingUser.getUpdatedAt())
+                        .createdAt(existingUser.getCreatedAt())
+                        .build();
 
                 // Send the response
                 return AuthenticationResponseDTO.builder()
-                                .status("success")
-                                .message("User Logged in successfully")
-                                .token(jwtToken)
-                                .user(user)
-                                .build();
+                        .status("success")
+                        .message("User Logged in successfully")
+                        .token(jwtToken)
+                        .user(user)
+                        .build();
         }
 
-        public UserProfileResponseDTO getUserProfileDetails(HttpHeaders header) {
+        public AuthenticationResponseDTO authenticate(HttpHeaders header) {
                 // Get the user details from the JWT token
                 List<String> jwt = header.get("Authorization");
 
                 assert jwt != null;
-                String username = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+                String jwtToken = jwt.get(0).split(" ")[1];
 
-                var user = usersRepository.findByEmail(username).orElseThrow();
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
 
                 UserProfileDetailsDTO userDetails = UserProfileDetailsDTO.builder()
                                 .id(user.getId())
                                 .email(user.getEmail())
+                                .studentId(user.getStudentId())
                                 .firstname(user.getFirstname())
                                 .lastname(user.getLastname())
-                                .studentId(user.getStudentId())
-                                .isEligibleForGraduation(user.getIsEligibleForGraduation())
-                                .outstandingBillAmount(user.getOutstandingBillAmount())
                                 .createdAt(user.getCreatedAt())
+                                .updatedAt(user.getUpdatedAt())
                                 .build();
 
-                return UserProfileResponseDTO.builder()
+                return AuthenticationResponseDTO.builder()
                                 .status("success")
                                 .message("User profile details fetched successfully")
+                                .token(jwtToken)
                                 .user(userDetails)
                                 .build();
         }
@@ -129,9 +137,9 @@ public class UserService {
                 List<String> jwt = header.get("Authorization");
 
                 assert jwt != null;
-                String username = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
 
-                Optional<UserEntity> user = usersRepository.findByEmail(username);
+                Optional<UserEntity> user = usersRepository.findByEmail(studentEmail);
 
                 CourseEntity course = courseRepository.findById(courseId).orElseThrow();
 
@@ -149,9 +157,9 @@ public class UserService {
                 List<String> jwt = header.get("Authorization");
 
                 assert jwt != null;
-                String username = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
 
-                UserEntity user = usersRepository.findByEmail(username).orElseThrow();
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
 
                 Set<CourseEntity> enrolledCourses = user.getEnrolledCourses();
 

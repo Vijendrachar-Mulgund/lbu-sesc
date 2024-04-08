@@ -16,5 +16,5 @@ public class AuthenticationResponseDTO {
 
     private String token;
 
-    private UserDetailsDTO user;
+    private UserProfileDetailsDTO user;
 }

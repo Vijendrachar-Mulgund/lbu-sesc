@@ -3,11 +3,9 @@ package uk.ac.leedsbeckett.student.controllers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.AuthenticationResponseDTO;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.CreateNewUserDTO;
@@ -52,8 +50,8 @@ public class AuthController {
         return ResponseEntity.ok(userService.logUserIn(request));
     }
 
-    @PostMapping(path = "/logout")
-    public ResponseEntity<String> userLogout() {
-        return ResponseEntity.ok("User logged out successfully");
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestHeader HttpHeaders header) {
+        return ResponseEntity.ok(userService.authenticate(header));
     }
 }
