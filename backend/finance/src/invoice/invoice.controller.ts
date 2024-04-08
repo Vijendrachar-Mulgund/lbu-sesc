@@ -38,8 +38,8 @@ export class InvoiceController {
     }
   }
 
-  @UseGuards(AuthGuard)
-  @Post()
+  // Allow other services to create invoices
+  @Post('/create/:studentEmail')
   async createInvoice(@Req() request: Request, @Res() response: Response) {
     try {
       const requestBody: Invoice = request.body;
@@ -47,43 +47,45 @@ export class InvoiceController {
       if (!requestBody) {
         throw new Error('Invalid request body');
       }
-      const studentEmail: string = request.body.token.sub;
+      const studentEmail: string = request.params.studentEmail;
 
       const newInvoice: Invoice = await this.invoiceService.createInvoice(
         requestBody,
         studentEmail,
       );
 
+      const invoice = {
+        invoiceId: newInvoice.id,
+        email: newInvoice.email,
+        studentId: newInvoice.studentId,
+        amount: newInvoice.amount,
+        currency: newInvoice.currency,
+        dueDate: newInvoice.dueDate,
+        type: newInvoice.type,
+        title: newInvoice.title,
+        status: newInvoice.status,
+        createdAt: newInvoice.createdAt,
+        updatedAt: newInvoice.updatedAt,
+      };
+
       response.status(HttpStatus.CREATED).json({
         status: 'success',
         message: 'Invoice created successfully',
-        invoice: {
-          invoiceId: newInvoice.id,
-          email: newInvoice.email,
-          studentId: newInvoice.studentId,
-          amount: newInvoice.amount,
-          currency: newInvoice.currency,
-          dueDate: newInvoice.dueDate,
-          type: newInvoice.type,
-          title: newInvoice.title,
-          status: newInvoice.status,
-          createdAt: newInvoice.createdAt,
-          updatedAt: newInvoice.updatedAt,
-        },
+        invoice,
       });
     } catch (error) {
       return restError(response, error, HttpStatus.BAD_REQUEST);
     }
   }
 
-  @UseGuards(AuthGuard)
-  @Get('balance')
+  // Allow other services to check the balance
+  @Get('balance/:studentEmail')
   async getBalance(@Req() request: Request, @Res() response: Response) {
     try {
-      const username: string = request.body.token.sub;
+      const studentEmail: string = request.params.studentEmail;
 
       const invoices: Invoice[] =
-        await this.invoiceService.getInvoices(username);
+        await this.invoiceService.getInvoices(studentEmail);
 
       let balance: number = 0;
       let currency: string = '';
@@ -112,28 +114,6 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':invoiceId')
-  async getInvoice(@Req() request: Request, @Res() response: Response) {
-    try {
-      const studentEmail: string = request.body.token.sub;
-      const invoiceId: string = request.params.invoiceId;
-
-      const invoice: Invoice = await this.invoiceService.getInvoiceById(
-        invoiceId,
-        studentEmail,
-      );
-
-      response.status(HttpStatus.OK).json({
-        status: 'success',
-        message: 'Invoice retrieved successfully',
-        invoice,
-      });
-    } catch (error) {
-      restError(response, error, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @UseGuards(AuthGuard)
   @Post('pay/:invoiceId')
   async payInvoice(@Req() request: Request, @Res() response: Response) {
     try {
@@ -144,6 +124,10 @@ export class InvoiceController {
         invoiceId,
         studentEmail,
       );
+
+      if (!invoice) {
+        throw new Error('Invoice not found');
+      }
 
       response.status(HttpStatus.OK).json({
         status: 'success',

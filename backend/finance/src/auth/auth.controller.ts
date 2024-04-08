@@ -1,12 +1,19 @@
-import { Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  HttpStatus,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { SignupRequestObject } from '../data/dto';
-import { LoginRequestObject } from '../data/dto';
 import { comparePassword, restError } from '../utils';
 import { User } from '../data/types';
+import { AuthGuard } from './auth.guard';
 
 @Controller('api/auth')
 export class AuthController {
@@ -29,10 +36,13 @@ export class AuthController {
       const jwt = await this.jwtService.signAsync({ sub: newUser.email });
 
       const user = {
+        id: newUser.id,
         firstname: newUser.firstname,
         lastname: newUser.lastname,
         email: newUser.email,
         studentId: newUser.studentId,
+        createdAt: newUser.createdAt,
+        updatedAt: newUser.updatedAt,
       };
 
       response.status(HttpStatus.CREATED).json({
@@ -50,7 +60,7 @@ export class AuthController {
   async login(@Req() request: Request, @Res() response: Response) {
     try {
       const existingUser: User = await this.authService.checkExistingUser(
-        request.body as LoginRequestObject,
+        request.body.email,
       );
 
       if (!existingUser?.email) {
@@ -71,16 +81,47 @@ export class AuthController {
       });
 
       const user = {
+        id: existingUser.id,
         firstname: existingUser.firstname,
         lastname: existingUser.lastname,
         email: existingUser.email,
         studentId: existingUser.studentId,
+        createdAt: existingUser.createdAt,
+        updatedAt: existingUser.updatedAt,
       };
 
       return response.status(HttpStatus.OK).json({
         status: 'success',
         message: 'User logged in successfully',
         token: jwt,
+        user,
+      });
+    } catch (error) {
+      return restError(response, error, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('authenticate')
+  async authenticate(@Req() request: Request, @Res() response: Response) {
+    try {
+      const existingUser: User = await this.authService.checkExistingUser(
+        request.body.token.sub,
+      );
+
+      const user = {
+        id: existingUser?.id,
+        firstname: existingUser.firstname,
+        lastname: existingUser.lastname,
+        email: existingUser.email,
+        studentId: existingUser.studentId,
+        createdAt: existingUser.createdAt,
+        updatedAt: existingUser.updatedAt,
+      };
+
+      return response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'User authenticated successfully',
         user,
       });
     } catch (error) {

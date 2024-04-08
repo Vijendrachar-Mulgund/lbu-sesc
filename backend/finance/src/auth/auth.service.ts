@@ -36,9 +36,9 @@ export class AuthService {
     }
   }
 
-  async checkExistingUser(loginBody: LoginRequestObject) {
+  async checkExistingUser(email: String) {
     try {
-      const user = await this.userModel.findOne({ email: loginBody.email });
+      const user = await this.userModel.findOne({ email: email });
 
       if (!user) {
         throw new Error('The User with this email does not exist!');
