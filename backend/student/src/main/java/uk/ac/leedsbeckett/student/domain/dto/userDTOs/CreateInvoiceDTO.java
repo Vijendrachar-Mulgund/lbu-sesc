@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.ac.leedsbeckett.student.domain.enums.Currency;
-import uk.ac.leedsbeckett.student.domain.enums.Department;
 
 @Data
 @AllArgsConstructor
