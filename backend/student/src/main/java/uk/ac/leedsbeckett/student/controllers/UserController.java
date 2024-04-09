@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.GetAllEnrolledCoursesDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.GetBalanceDTO;
 import uk.ac.leedsbeckett.student.services.UserService;
 
 @RestController
@@ -17,6 +18,11 @@ public class UserController {
     @GetMapping("/enrolled-courses")
     public ResponseEntity<GetAllEnrolledCoursesDTO> getEnrolledCourses(@RequestHeader HttpHeaders header) {
         return ResponseEntity.ok(userService.getEnrolledCourses(header));
+    }
+
+    @GetMapping("/check-balance")
+    public ResponseEntity<GetBalanceDTO> checkBalance(@RequestHeader HttpHeaders header) {
+        return ResponseEntity.ok(userService.checkBalance(header));
     }
 
     @PutMapping("/enroll/{courseId}")

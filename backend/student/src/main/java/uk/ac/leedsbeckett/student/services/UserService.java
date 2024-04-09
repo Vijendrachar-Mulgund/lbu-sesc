@@ -18,7 +18,6 @@ import uk.ac.leedsbeckett.student.repositories.UsersRepository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -147,11 +146,6 @@ public class UserService {
 
                 CourseEntity course = courseRepository.findById(courseId).orElseThrow();
 
-//                user.map(u -> {
-//                        u.getEnrolledCourses().add(course);
-//                        return usersRepository.save(u);
-//                });
-
                 user.getEnrolledCourses().add(course);
                 usersRepository.save(user);
 
@@ -161,12 +155,12 @@ public class UserService {
                 String createNewFinanceInvoiceURI = financeBaseURI + "/api/invoice/create/" + studentEmail;
 
                 CreateInvoiceDTO newInvoice = CreateInvoiceDTO.builder()
-                        .amount(course.getFees())
-                        .currency(course.getCurrency())
-                        .title(course.getCourseName())
-                        .type("TUITION")
-                        .studentId(user.getStudentId())
-                        .build();
+                                .amount(course.getFees())
+                                .currency(course.getCurrency())
+                                .title(course.getCourseName())
+                                .type("TUITION")
+                                .studentId(user.getStudentId())
+                                .build();
 
                 restTemplate.postForObject(createNewFinanceInvoiceURI, newInvoice, String.class);
 
@@ -190,5 +184,19 @@ public class UserService {
                                 .message("Enrolled courses fetched successfully")
                                 .enrolledCourses(enrolledCourses)
                                 .build();
+        }
+
+        public GetBalanceDTO checkBalance(HttpHeaders header) {
+                // Get the user details from the JWT token
+                List<String> jwt = header.get("Authorization");
+
+                assert jwt != null;
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                RestTemplate restTemplate = new RestTemplate();
+                String checkBalanceURI = financeBaseURI + "/api/invoice/balance/" + studentEmail;
+
+                return restTemplate.getForObject(checkBalanceURI, GetBalanceDTO.class);
+
         }
 }
