@@ -8,9 +8,6 @@ export default defineConfig({
     react(),
     federation({
       name: "finance-app",
-      remotes: {
-        AuthApp: "http://localhost:5170/assets/authRemoteEntry.js",
-      },
       shared: ["react", "react-dom"],
     }),
   ],
