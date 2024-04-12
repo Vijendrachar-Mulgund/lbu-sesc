@@ -20,6 +20,7 @@ export default function Register() {
   const registerNewAccount = (data: IRegisterFormInput) => {
     console.log(data);
   };
+
   return (
     <>
       <div className="flex min-h-full h-screen flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8">

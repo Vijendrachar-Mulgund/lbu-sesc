@@ -2,7 +2,8 @@ import { Input, Button } from "@nextui-org/react";
 import LeedsBeckettUniversity from "../../assets/lbu_logo.svg";
 import { useForm } from "react-hook-form";
 import { setUser } from "../../redux/user";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 interface IFormSignInInput {
   email: string;
@@ -17,13 +18,10 @@ export default function Login() {
   } = useForm<IFormSignInInput>();
 
   const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.user);
-
-  console.log("user ->", user);
+  const navigate = useNavigate();
 
   const signUserIn = async (data: IFormSignInInput) => {
     const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/login";
-    console.log("signupURI ->", signupURI);
 
     try {
       const response = await fetch(signupURI, {
@@ -34,17 +32,17 @@ export default function Login() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Failed to sign in");
       }
 
       const responseData = await response.json();
-      console.log("responseData ->", responseData);
+      localStorage.setItem("token", responseData?.token);
+      dispatch(setUser(responseData?.user));
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
-    dispatch(setUser(data));
-    console.log(data);
   };
 
   return (
@@ -54,7 +52,7 @@ export default function Login() {
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img className="mx-auto h-24 w-auto" src={LeedsBeckettUniversity} alt="Leeds Beckett University Logo" />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Sign in to your Student Portal
           </h2>
         </div>
 

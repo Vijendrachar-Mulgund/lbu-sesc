@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { IUser } from "../../types/user";
 
 export default function Profile() {
-  const user: IUser = useSelector((state: any) => state.user);
+  const user: IUser = useSelector((state: any) => state.user.user);
 
   return (
     <div className="flex items-center justify-center h-screen mx-auto w-6/12	">
