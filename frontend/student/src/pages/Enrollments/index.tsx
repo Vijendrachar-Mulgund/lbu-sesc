@@ -79,24 +79,6 @@ const courses = [
     currency: "GBP",
     department: "ACCOUNTING",
   },
-  {
-    id: "f95767a1-f589-480d-be17-1ed31c23eed6",
-    courseName: "Introduction to Finance, Accounting, Modeling and Valuation",
-    courseDescription:
-      "Learn Finance & Accounting from Scratch by an Award Winning MBA Professor, Ivy Grad, worked @ Goldman & VC",
-    fees: 149.99,
-    currency: "GBP",
-    department: "FINANCE",
-  },
-  {
-    id: "0da0df76-cb7a-4e0d-be04-70c7b64a65d0",
-    courseName: "The Complete 2024 Web Development Bootcamp",
-    courseDescription:
-      "Become a Full-Stack Web Developer with just ONE course. HTML, CSS, Javascript, Node, React, PostgreSQL, Web3 and DApps",
-    fees: 49.99,
-    currency: "GBP",
-    department: "COMPUTER_SCIENCE",
-  },
 ];
 
 interface Course {
@@ -108,7 +90,7 @@ interface Course {
   department: string;
 }
 
-export default function Courses() {
+export default function Enrollments() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
@@ -124,7 +106,7 @@ export default function Courses() {
 
   return (
     <div>
-      <h1 className="text-4xl text-center font-bold my-20">All Available Courses</h1>
+      <h1 className="text-4xl text-center font-bold my-20">Enrolled Courses</h1>
 
       <div className="m-auto flex justify-center max-w-screen-2xl">
         <Table isStriped aria-label="Example static collection table">

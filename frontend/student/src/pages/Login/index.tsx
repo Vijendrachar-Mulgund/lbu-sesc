@@ -22,7 +22,7 @@ export default function Login() {
   console.log("user ->", user);
 
   const signUserIn = async (data: IFormSignInInput) => {
-    const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/signup";
+    const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/login";
     console.log("signupURI ->", signupURI);
 
     try {
