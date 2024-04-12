@@ -5,6 +5,7 @@ import Header from "./ui/Header/Header";
 import Profile from "./pages/Profile";
 import { useSelector } from "react-redux";
 import { IUser } from "./types/user";
+import Courses from "./pages/Courses";
 
 function App() {
   const user: IUser = useSelector((state: any) => state.user);
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/courses" element={<Courses />} />
         </Routes>
       </div>
     </>
