@@ -1,6 +1,8 @@
 import { Input, Button } from "@nextui-org/react";
 import LeedsBeckettUniversity from "../../assets/lbu_logo.svg";
 import { useForm } from "react-hook-form";
+import { setUser } from "../../redux/user";
+import { useDispatch, useSelector } from "react-redux";
 
 interface IFormSignInInput {
   email: string;
@@ -14,7 +16,34 @@ export default function Login() {
     formState: { errors },
   } = useForm<IFormSignInInput>();
 
-  const signUserIn = (data: IFormSignInInput) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user);
+
+  console.log("user ->", user);
+
+  const signUserIn = async (data: IFormSignInInput) => {
+    const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/signup";
+    console.log("signupURI ->", signupURI);
+
+    try {
+      const response = await fetch(signupURI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to sign in");
+      }
+
+      const responseData = await response.json();
+      console.log("responseData ->", responseData);
+    } catch (error) {
+      console.error(error);
+    }
+    dispatch(setUser(data));
     console.log(data);
   };
 

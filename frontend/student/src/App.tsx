@@ -1,14 +1,25 @@
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Header from "./ui/Header/Header";
+import Profile from "./pages/Profile";
+import { useSelector } from "react-redux";
+import { IUser } from "./types/user";
 
 function App() {
+  const user: IUser = useSelector((state: any) => state.user);
+
   return (
     <>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <Header user={user} />
+
+      <div className="overscroll-none">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </div>
     </>
   );
 }
