@@ -2,12 +2,12 @@ version: "3.1"
 
 services:
   db:
-    container_name: postgres-student-db
+    container_name: postgres-library-db
     image: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     expose:
-      - "5432"
+      - "5433"
     deploy:
       mode: global
     restart: always
@@ -16,14 +16,14 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - postgres_student_data:/var/lib/postgresql/data
+      - postgres_library_data:/var/lib/postgresql/data
 
   api:
-    container_name: student-api
+    container_name: library-api
     build:
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8082:8082"
     depends_on:
       - db
     environment:
@@ -36,10 +36,10 @@ services:
       SPRING_JPA_DATABASE: ${SPRING_DATA_JPA_DATABASE}
       JWT_SECRET: ${JWT_SECRET}
     volumes:
-      - student_api:/app
+      - library_api:/app
 
 volumes:
-  postgres_student_data:
+  postgres_library_data:
     driver: local
-  student_api:
+  library_api:
     driver: local

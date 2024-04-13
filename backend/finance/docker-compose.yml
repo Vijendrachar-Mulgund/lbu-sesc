@@ -2,11 +2,11 @@ version: '3.1'
 
 services:
   db:
-    container_name: mongo-db
+    container_name: mongo-finance-db
     image: mongo
     restart: always
     volumes:
-      - mongo_db:/data/db
+      - mongo_finance_db:/data/db
     ports:
       - '27017:27017'
 
@@ -31,7 +31,7 @@ services:
       - finance_api:/app
 
 volumes:
-  mongo_db:
+  mongo_finance_db:
     driver: local
   finance_api:
     driver: local
