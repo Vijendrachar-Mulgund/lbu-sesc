@@ -69,6 +69,20 @@ public class UserService {
                                 .updatedAt(newUser.getUpdatedAt())
                                 .build();
 
+                CreateNewUserDTO newUserDTO = CreateNewUserDTO.builder()
+                                .email(request.getEmail())
+                                .firstname(request.getFirstname())
+                                .lastname(request.getLastname())
+                                .password(request.getPassword())
+                                .studentId(newUser.getStudentId())
+                                .build();
+
+                // Create a new User on the finance portal
+                RestTemplate restTemplate = new RestTemplate();
+                String createNewFinanceAccountURI = financeBaseURI + "/api/auth/signup";
+
+                restTemplate.postForObject(createNewFinanceAccountURI, newUserDTO, String.class);
+
                 // Send the response
                 return AuthenticationResponseDTO.builder()
                                 .status("success")
