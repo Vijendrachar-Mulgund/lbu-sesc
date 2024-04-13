@@ -1,8 +1,8 @@
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button } from "@nextui-org/react";
 import { IUser } from "../../types/user";
 import LeedsBeckettUniversityLogo from "../../assets/lbu_logo.svg";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { removeUser } from "../../redux/user";
 
 interface IHeaderProps {
@@ -12,6 +12,7 @@ interface IHeaderProps {
 export default function Header({ user }: IHeaderProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleUserLogout = () => {
     localStorage.removeItem("token");
@@ -29,19 +30,18 @@ export default function Header({ user }: IHeaderProps) {
           </NavbarBrand>
 
           <NavbarContent className="hidden sm:flex gap-4" justify="center">
-            <NavbarItem>
-              <Link color="foreground" href="#">
-                Courses
-              </Link>
+            <NavbarItem isActive={location.pathname === "/"}>
+              <Link to="/">Profile</Link>
             </NavbarItem>
-            <NavbarItem isActive>
-              <Link href="#" aria-current="page">
-                Enrollments
-              </Link>
+            <NavbarItem isActive={location.pathname === "/courses"}>
+              <Link to="/courses">Courses</Link>
+            </NavbarItem>
+            <NavbarItem isActive={location.pathname === "/enrolled-courses"}>
+              <Link to="/enrolled-courses">Enrollments</Link>
             </NavbarItem>
 
             <NavbarItem>
-              <Button onClick={handleUserLogout} size="sm">
+              <Button color="danger" onClick={handleUserLogout} size="md">
                 Logout
               </Button>
             </NavbarItem>

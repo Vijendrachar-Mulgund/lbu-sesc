@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Header from "./ui/Header/Header";
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IUser } from "./types/user";
 import Courses from "./pages/Courses";
 import Enrollments from "./pages/Enrollments";
-import { ProtectedRoute } from "./AuthGaurd";
+import { ProtectedRoute } from "./AuthGuard";
 import { useEffect } from "react";
 import { setUser } from "./redux/user";
 
@@ -16,36 +16,38 @@ function App() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token: String | null = localStorage.getItem("token");
 
-    const fetchUser = async () => {
-      try {
-        const userURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/authenticate";
-        const response = await fetch(userURI, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.status !== 200) {
-          throw new Error("Failed to authenticate");
-        }
-
-        const responseData = await response.json();
-        dispatch(setUser(responseData?.user));
-        navigate("/");
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     if (token && !user) {
-      fetchUser();
+      fetchUser(token);
     }
   }, []);
+
+  const fetchUser = async (token: String) => {
+    try {
+      const userURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/authenticate";
+      const response = await fetch(userURI, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error("Failed to authenticate");
+      }
+
+      const responseData = await response.json();
+      dispatch(setUser(responseData?.user));
+      navigate(location.pathname || "/");
+    } catch (error) {
+      console.error(error);
+      navigate("/login");
+    }
+  };
 
   return (
     <>
