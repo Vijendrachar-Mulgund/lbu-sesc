@@ -18,6 +18,10 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(name = "student_id_unique", columnNames = "studentId"),
+        @UniqueConstraint(name = "email_unique", columnNames = "email")
+})
 public class UserEntity implements UserDetails {
 
     @Id
@@ -26,13 +30,13 @@ public class UserEntity implements UserDetails {
 
     private String studentId;
 
-    private String firstName;
+    private String firstname;
 
-    private String lastName;
+    private String lastname;
 
     private String email;
 
-    private String pin;
+    private String password;
 
     private Boolean isDefaultPin;
 
@@ -50,7 +54,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return pin;
+        return password;
     }
 
     @Override
