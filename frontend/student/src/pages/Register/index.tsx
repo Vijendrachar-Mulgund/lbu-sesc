@@ -2,6 +2,11 @@ import { Input, Button } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { emailRegex } from "../../utils";
 import LeedsBeckettUniversity from "../../assets/lbu_logo.svg";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../../redux/user";
+import { useEffect, useState } from "react";
+import Alert from "../../ui/Alert/Alert";
 
 interface IRegisterFormInput {
   email: string;
@@ -17,8 +22,43 @@ export default function Register() {
     formState: { errors },
   } = useForm<IRegisterFormInput>();
 
-  const registerNewAccount = (data: IRegisterFormInput) => {
-    console.log(data);
+  const [error, setError] = useState<string>("");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError("");
+    }, 5000);
+  }, [error]);
+
+  const registerNewAccount = async (data: IRegisterFormInput) => {
+    const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/signup";
+
+    try {
+      const response = await fetch(signupURI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const responseData = await response.json();
+
+      if (responseData.status !== "success") {
+        console.error(responseData.message);
+        throw new Error(responseData.message);
+      }
+
+      localStorage.setItem("token", responseData?.token);
+      dispatch(setUser(responseData?.user));
+      navigate("/");
+    } catch (error: any) {
+      setError(error?.message || "Failed to register");
+      console.error(error);
+    }
   };
 
   return (
@@ -35,6 +75,8 @@ export default function Register() {
 
         {/* Form Section */}
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          {error ? <Alert message={error} /> : null}
+
           <form className="space-y-6" onSubmit={handleSubmit(registerNewAccount)}>
             <Input
               type="email"

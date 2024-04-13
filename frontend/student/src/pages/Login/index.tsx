@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { setUser } from "../../redux/user";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Alert from "../../ui/Alert/Alert";
+import { useEffect, useState } from "react";
 
 interface IFormSignInInput {
   email: string;
@@ -17,14 +19,22 @@ export default function Login() {
     formState: { errors },
   } = useForm<IFormSignInInput>();
 
+  const [error, setError] = useState<string>("");
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setTimeout(() => {
+      setError("");
+    }, 5000);
+  }, [error]);
+
   const signUserIn = async (data: IFormSignInInput) => {
-    const signupURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/login";
+    const loginURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/login";
 
     try {
-      const response = await fetch(signupURI, {
+      const response = await fetch(loginURI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,16 +42,18 @@ export default function Login() {
         body: JSON.stringify(data),
       });
 
-      if (response.status !== 200) {
-        throw new Error("Failed to sign in");
+      const responseData = await response.json();
+
+      if (responseData.status !== "success") {
+        throw new Error(responseData.message);
       }
 
-      const responseData = await response.json();
       localStorage.setItem("token", responseData?.token);
       dispatch(setUser(responseData?.user));
       navigate("/");
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error?.message || "Failed to sign in");
+      console.error(error || "Failed to sign in");
     }
   };
 
@@ -58,6 +70,8 @@ export default function Login() {
 
         {/* Form Section */}
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+          {error ? <Alert message={error} /> : null}
+
           <form className="space-y-6" onSubmit={handleSubmit(signUserIn)}>
             <Input
               type="email"
@@ -81,6 +95,15 @@ export default function Login() {
               Login
             </Button>
           </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?
+              <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
+                Register
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </>
