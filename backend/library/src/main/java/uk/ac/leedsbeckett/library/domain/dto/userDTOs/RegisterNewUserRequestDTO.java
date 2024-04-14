@@ -23,6 +23,6 @@ public class RegisterNewUserRequestDTO {
     @NotNull(message = "Please enter your last name")
     private String lastname;
 
-    @NotBlank(message = "Please enter a strong password")
-    private String password;
+    @NotBlank(message = "Please enter your StudentID")
+    private String studentId;
 }

@@ -22,6 +22,8 @@ public class UserProfileDetailsDTO {
 
     private String lastname;
 
+    private Boolean isDefaultPin;
+
     private Date createdAt;
 
     private Date updatedAt;

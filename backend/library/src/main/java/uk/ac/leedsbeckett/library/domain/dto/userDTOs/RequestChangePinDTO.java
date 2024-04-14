@@ -9,12 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateNewUserDTO {
-    private String studentId;
-
-    private String firstname;
-
-    private String lastname;
-
-    private String email;
+public class RequestChangePinDTO {
+    private String pin;
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.ac.leedsbeckett.library.domain.dto.userDTOs.AuthenticationResponseDTO;
 import uk.ac.leedsbeckett.library.domain.dto.userDTOs.LoginUserRequestDTO;
 import uk.ac.leedsbeckett.library.domain.dto.userDTOs.RegisterNewUserRequestDTO;
+import uk.ac.leedsbeckett.library.domain.dto.userDTOs.RequestChangePinDTO;
 import uk.ac.leedsbeckett.library.services.UserService;
 
 @RestController
@@ -30,5 +31,10 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestHeader HttpHeaders header) {
         return ResponseEntity.ok(userService.authenticate(header));
+    }
+
+    @PostMapping("/change-pin/{email}")
+    public ResponseEntity<AuthenticationResponseDTO> changePin(@RequestBody RequestChangePinDTO request, @PathVariable String email) {
+        return ResponseEntity.ok(userService.changePin(request, email));
     }
 }
