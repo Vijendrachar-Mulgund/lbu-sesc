@@ -1,20 +1,36 @@
 package uk.ac.leedsbeckett.library.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetAllBooksDTO;
+import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetAllBorrowedBooks;
 import uk.ac.leedsbeckett.library.domain.dto.userDTOs.*;
+import uk.ac.leedsbeckett.library.domain.entities.BookEntity;
+import uk.ac.leedsbeckett.library.domain.entities.BorrowedBooksEntity;
 import uk.ac.leedsbeckett.library.domain.entities.UserEntity;
+import uk.ac.leedsbeckett.library.domain.enums.Currency;
 import uk.ac.leedsbeckett.library.domain.enums.Role;
+import uk.ac.leedsbeckett.library.repositories.BooksRepository;
+import uk.ac.leedsbeckett.library.repositories.BorrowedBooksRepository;
 import uk.ac.leedsbeckett.library.repositories.UserRepository;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -26,10 +42,14 @@ public class UserService {
 
         private final AuthenticationManager authenticationManager;
 
+        private final BooksRepository booksRepository;
+
+        private final BorrowedBooksRepository borrowedBooksRepository;
+
         @Value("${uri.base.finance}")
         private String financeBaseURI;
 
-        public AuthenticationResponseDTO createUser(RegisterNewUserRequestDTO request) {
+    public AuthenticationResponseDTO createUser(RegisterNewUserRequestDTO request) {
                 // Generate the new user object
                 String defaultPin = "000000";
                 UserEntity newUser = UserEntity.builder()
@@ -152,5 +172,103 @@ public class UserService {
                                 .token(jwtToken)
                                 .user(userDetails)
                                 .build();
+        }
+
+        public String borrowBook(HttpHeaders header, Integer isbn) {
+
+                // Get the user details from the JWT token
+                List<String> jwt = header.get("Authorization");
+
+                assert jwt != null;
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
+
+                BookEntity book = booksRepository.findByIsbn(isbn).orElseThrow();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, 1);
+
+                if(book.getCopies() >= 1) {
+                        BorrowedBooksEntity borrowedBook = BorrowedBooksEntity.builder()
+                                .book(book)
+                                .title(book.getTitle())
+                                .borrowedDate(new Date())
+                                .dueDate(calendar.getTime())
+                                .isbn(book.getIsbn())
+                                .student(user)
+                                .build();
+
+                        borrowedBooksRepository.save(borrowedBook);
+
+                        book.setCopies(book.getCopies() - 1);
+                        booksRepository.save(book);
+                } else {
+                        throw new RuntimeException("No more copies available");
+                }
+
+                return "Book borrowed successfully";
+        }
+
+        public String returnBook(HttpHeaders header, String borrowId) {
+                List<String> jwt = header.get("Authorization");
+
+                assert jwt != null;
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                double finePerDay = 3.0;
+
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
+
+                BorrowedBooksEntity borrowedBook = borrowedBooksRepository.findById(borrowId).orElseThrow();
+
+                BookEntity book = booksRepository.findByIsbn(borrowedBook.getIsbn()).orElseThrow();
+
+                LocalDate due = borrowedBook.getDueDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDate today = LocalDate.now();
+
+                long pastDueDate = ChronoUnit.DAYS.between(due, today);
+
+                if(pastDueDate > 0) {
+                    Double fineAmount = finePerDay * pastDueDate;
+                        // Create an Invoice for the same
+                        RestTemplate restTemplate = new RestTemplate();
+                        String createNewFinanceInvoiceURI = financeBaseURI + "/api/invoice/create/" + studentEmail;
+
+                        CreateInvoiceDTO newInvoice = CreateInvoiceDTO.builder()
+                                .amount(fineAmount)
+                                .currency(Currency.GBP)
+                                .title(book.getTitle())
+                                .type("BOOK")
+                                .studentId(user.getStudentId())
+                                .build();
+
+                        restTemplate.postForObject(createNewFinanceInvoiceURI, newInvoice, String.class);
+                }
+
+                borrowedBook.setReturnedDate(new Date());
+                borrowedBooksRepository.save(borrowedBook);
+                book.setCopies(book.getCopies() + 1);
+                booksRepository.save(book);
+
+                return "The book returned successfully";
+        }
+
+        public GetAllBorrowedBooks getBorrowedBooks(HttpHeaders header) {
+                // Get the user details from the JWT token
+                List<String> jwt = header.get("Authorization");
+
+                assert jwt != null;
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
+
+                Set<BorrowedBooksEntity> borrowedBooks = borrowedBooksRepository.findAllByStudentId(user.getId());
+
+                return GetAllBorrowedBooks.builder()
+                       .status("success")
+                       .message("All borrowed books fetched successfully")
+                        .books(borrowedBooks)
+                       .build();
         }
 }

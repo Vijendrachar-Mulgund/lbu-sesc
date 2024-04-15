@@ -37,6 +37,9 @@ public class UserService {
         @Value("${uri.base.finance}")
         private String financeBaseURI;
 
+        @Value("${uri.base.library}")
+        private String libraryBaseURI;
+
         private String generateStudentId() {
                 return "c" + Math.round(Math.random() * 1000000);
         }
@@ -69,7 +72,7 @@ public class UserService {
                                 .updatedAt(newUser.getUpdatedAt())
                                 .build();
 
-                CreateNewUserDTO newUserDTO = CreateNewUserDTO.builder()
+                CreateNewUserDTO newFinanceUserDTO = CreateNewUserDTO.builder()
                                 .email(request.getEmail())
                                 .firstname(request.getFirstname())
                                 .lastname(request.getLastname())
@@ -77,11 +80,21 @@ public class UserService {
                                 .studentId(newUser.getStudentId())
                                 .build();
 
+                CreateNewUserDTO newLibraryUserDTO = CreateNewUserDTO.builder()
+                        .email(request.getEmail())
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
+                        .password(request.getPassword())
+                        .studentId(newUser.getStudentId())
+                        .build();
+
                 // Create a new User on the finance portal
                 RestTemplate restTemplate = new RestTemplate();
                 String createNewFinanceAccountURI = financeBaseURI + "/api/auth/signup";
+                String createNewLibraryAccountURI = libraryBaseURI + "/api/auth/signup";
 
-                restTemplate.postForObject(createNewFinanceAccountURI, newUserDTO, String.class);
+                restTemplate.postForObject(createNewFinanceAccountURI, newFinanceUserDTO, String.class);
+                restTemplate.postForObject(createNewLibraryAccountURI, newLibraryUserDTO, String.class);
 
                 // Send the response
                 return AuthenticationResponseDTO.builder()

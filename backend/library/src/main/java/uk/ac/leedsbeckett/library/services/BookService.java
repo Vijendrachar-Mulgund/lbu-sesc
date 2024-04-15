@@ -3,6 +3,7 @@ package uk.ac.leedsbeckett.library.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetAllBooksDTO;
+import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetBookDTO;
 import uk.ac.leedsbeckett.library.domain.entities.BookEntity;
 import uk.ac.leedsbeckett.library.repositories.BooksRepository;
 
@@ -20,6 +21,16 @@ public class BookService {
                 .status("success")
                 .message("All books received successfully")
                 .books(allBooks)
+                .build();
+    }
+
+    public GetBookDTO getBookById(Integer isbn) {
+        BookEntity book = booksRepository.findByIsbn(isbn).orElseThrow();
+
+        return GetBookDTO.builder()
+                .status("status")
+                .message("Book received successfully")
+                .book(book)
                 .build();
     }
 }
