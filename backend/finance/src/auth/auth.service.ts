@@ -52,9 +52,14 @@ export class AuthService {
 
   updateUser(studentEmail: string, updateBody: any) {
     try {
+      const userObject = {};
+
+      if (updateBody.firstname) userObject['firstname'] = updateBody.firstname;
+      if (updateBody.lastname) userObject['lastname'] = updateBody.lastname;
+
       return this.userModel.findOneAndUpdate(
         { email: studentEmail },
-        updateBody,
+        userObject,
         { new: true },
       );
     } catch (error) {
