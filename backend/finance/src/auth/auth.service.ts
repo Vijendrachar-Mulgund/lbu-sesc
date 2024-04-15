@@ -50,6 +50,18 @@ export class AuthService {
     }
   }
 
+  updateUser(studentEmail: string, updateBody: any) {
+    try {
+      return this.userModel.findOneAndUpdate(
+        { email: studentEmail },
+        updateBody,
+        { new: true },
+      );
+    } catch (error) {
+      return error;
+    }
+  }
+
   logout() {
     return { message: 'Logout Service' };
   }

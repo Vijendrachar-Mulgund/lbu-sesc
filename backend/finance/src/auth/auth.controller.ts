@@ -2,6 +2,7 @@ import {
   Controller,
   HttpStatus,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -98,6 +99,23 @@ export class AuthController {
       });
     } catch (error) {
       return restError(response, error, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Put('update/:studentEmail')
+  async update(@Req() request: Request, @Res() response: Response) {
+    try {
+      await this.authService.updateUser(
+        request.params.studentEmail,
+        request.body,
+      );
+
+      return response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'User updated successfully',
+      });
+    } catch (error) {
+      return restError(response, error, HttpStatus.BAD_REQUEST);
     }
   }
 

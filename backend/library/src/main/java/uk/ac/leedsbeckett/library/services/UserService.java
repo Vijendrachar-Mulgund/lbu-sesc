@@ -170,6 +170,21 @@ public class UserService {
                                 .build();
         }
 
+        public String updateUser(String studentEmail, UpdateUserRequestDTO request ) {
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
+
+                if (request.getFirstname() != null) {
+                        user.setFirstname(request.getFirstname());
+                        usersRepository.save(user);
+                }
+                if (request.getLastname() != null) {
+                        user.setLastname(request.getLastname());
+                        usersRepository.save(user);
+                }
+
+                return "User updated successfully";
+        }
+
         public String borrowBook(HttpHeaders header, Integer isbn) {
 
                 // Get the user details from the JWT token

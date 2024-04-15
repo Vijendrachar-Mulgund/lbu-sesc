@@ -172,14 +172,26 @@ public class UserService {
 
                 UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
 
+                UpdateUser updateUser = new UpdateUser();
+
                 if (request.getFirstname() != null) {
+                        updateUser.setFirstname(request.getFirstname());
                         user.setFirstname(request.getFirstname());
                         usersRepository.save(user);
                 }
                 if (request.getLastname() != null) {
+                        updateUser.setLastname(request.getLastname());
                         user.setLastname(request.getLastname());
                         usersRepository.save(user);
                 }
+
+                // Update the Library and the Finance dbs
+                RestTemplate restTemplate = new RestTemplate();
+                String updateUserFinanceAccountURI = financeBaseURI + "/api/auth/update/" + studentEmail;
+                String updateUserLibraryAccountURI = libraryBaseURI + "/api/auth/update/" + studentEmail;
+
+                restTemplate.put(updateUserFinanceAccountURI, updateUser, String.class);
+                restTemplate.put(updateUserLibraryAccountURI, updateUser, String.class);
 
                 return "User updated successfully";
         }

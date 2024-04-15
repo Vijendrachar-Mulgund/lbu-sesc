@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import uk.ac.leedsbeckett.library.domain.dto.userDTOs.AuthenticationResponseDTO;
-import uk.ac.leedsbeckett.library.domain.dto.userDTOs.LoginUserRequestDTO;
-import uk.ac.leedsbeckett.library.domain.dto.userDTOs.RegisterNewUserRequestDTO;
-import uk.ac.leedsbeckett.library.domain.dto.userDTOs.RequestChangePinDTO;
+import uk.ac.leedsbeckett.library.domain.dto.userDTOs.*;
 import uk.ac.leedsbeckett.library.services.UserService;
 
 @RestController
@@ -36,5 +33,10 @@ public class AuthController {
     @PostMapping("/change-pin/{email}")
     public ResponseEntity<AuthenticationResponseDTO> changePin(@RequestBody RequestChangePinDTO request, @PathVariable String email) {
         return ResponseEntity.ok(userService.changePin(request, email));
+    }
+
+    @PutMapping("/update/{studentEmail}")
+    public ResponseEntity<String> updateUser(@PathVariable String studentEmail, @RequestBody UpdateUserRequestDTO request) {
+        return ResponseEntity.ok(userService.updateUser(studentEmail, request));
     }
 }
