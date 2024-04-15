@@ -1,8 +1,6 @@
 package uk.ac.leedsbeckett.library.services;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +8,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetAllBooksDTO;
 import uk.ac.leedsbeckett.library.domain.dto.bookDTOs.GetAllBorrowedBooks;
 import uk.ac.leedsbeckett.library.domain.dto.userDTOs.*;
 import uk.ac.leedsbeckett.library.domain.entities.BookEntity;
@@ -30,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -49,7 +45,7 @@ public class UserService {
         @Value("${uri.base.finance}")
         private String financeBaseURI;
 
-    public AuthenticationResponseDTO createUser(RegisterNewUserRequestDTO request) {
+        public AuthenticationResponseDTO createUser(RegisterNewUserRequestDTO request) {
                 // Generate the new user object
                 String defaultPin = "000000";
                 UserEntity newUser = UserEntity.builder()
@@ -189,15 +185,15 @@ public class UserService {
                 Calendar calendar = Calendar.getInstance();
                 calendar.add(Calendar.DATE, 1);
 
-                if(book.getCopies() >= 1) {
+                if (book.getCopies() >= 1) {
                         BorrowedBooksEntity borrowedBook = BorrowedBooksEntity.builder()
-                                .book(book)
-                                .title(book.getTitle())
-                                .borrowedDate(new Date())
-                                .dueDate(calendar.getTime())
-                                .isbn(book.getIsbn())
-                                .student(user)
-                                .build();
+                                        .book(book)
+                                        .title(book.getTitle())
+                                        .borrowedDate(new Date())
+                                        .dueDate(calendar.getTime())
+                                        .isbn(book.getIsbn())
+                                        .student(user)
+                                        .build();
 
                         borrowedBooksRepository.save(borrowedBook);
 
@@ -229,19 +225,19 @@ public class UserService {
 
                 long pastDueDate = ChronoUnit.DAYS.between(due, today);
 
-                if(pastDueDate > 0) {
-                    Double fineAmount = finePerDay * pastDueDate;
+                if (pastDueDate > 0) {
+                        Double fineAmount = finePerDay * pastDueDate;
                         // Create an Invoice for the same
                         RestTemplate restTemplate = new RestTemplate();
                         String createNewFinanceInvoiceURI = financeBaseURI + "/api/invoice/create/" + studentEmail;
 
                         CreateInvoiceDTO newInvoice = CreateInvoiceDTO.builder()
-                                .amount(fineAmount)
-                                .currency(Currency.GBP)
-                                .title(book.getTitle())
-                                .type("BOOK")
-                                .studentId(user.getStudentId())
-                                .build();
+                                        .amount(fineAmount)
+                                        .currency(Currency.GBP)
+                                        .title(book.getTitle())
+                                        .type("BOOK")
+                                        .studentId(user.getStudentId())
+                                        .build();
 
                         restTemplate.postForObject(createNewFinanceInvoiceURI, newInvoice, String.class);
                 }
@@ -266,9 +262,9 @@ public class UserService {
                 Set<BorrowedBooksEntity> borrowedBooks = borrowedBooksRepository.findAllByStudentId(user.getId());
 
                 return GetAllBorrowedBooks.builder()
-                       .status("success")
-                       .message("All borrowed books fetched successfully")
-                        .books(borrowedBooks)
-                       .build();
+                                .status("success")
+                                .message("All borrowed books fetched successfully")
+                                .books(borrowedBooks)
+                                .build();
         }
 }

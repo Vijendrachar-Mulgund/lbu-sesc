@@ -81,12 +81,12 @@ public class UserService {
                                 .build();
 
                 CreateNewUserDTO newLibraryUserDTO = CreateNewUserDTO.builder()
-                        .email(request.getEmail())
-                        .firstname(request.getFirstname())
-                        .lastname(request.getLastname())
-                        .password(request.getPassword())
-                        .studentId(newUser.getStudentId())
-                        .build();
+                                .email(request.getEmail())
+                                .firstname(request.getFirstname())
+                                .lastname(request.getLastname())
+                                .password(request.getPassword())
+                                .studentId(newUser.getStudentId())
+                                .build();
 
                 // Create a new User on the finance portal
                 RestTemplate restTemplate = new RestTemplate();
@@ -162,6 +162,28 @@ public class UserService {
                                 .build();
         }
 
+        public String updateUser(HttpHeaders header, UpdateUserRequestDTO request) {
+                // Get the user details from the JWT token
+                List<String> jwt = header.get("Authorization");
+
+                assert jwt != null;
+
+                String studentEmail = jwtService.extractUsername(jwt.get(0).split(" ")[1]);
+
+                UserEntity user = usersRepository.findByEmail(studentEmail).orElseThrow();
+
+                if (request.getFirstname() != null) {
+                        user.setFirstname(request.getFirstname());
+                        usersRepository.save(user);
+                }
+                if (request.getLastname() != null) {
+                        user.setLastname(request.getLastname());
+                        usersRepository.save(user);
+                }
+
+                return "User updated successfully";
+        }
+
         public String enrollStudentIntoCourse(HttpHeaders header, String courseId) {
                 // Get the user details from the JWT token
                 List<String> jwt = header.get("Authorization");
@@ -175,7 +197,7 @@ public class UserService {
 
                 Set<CourseEntity> enrolledCourses = user.getEnrolledCourses();
 
-                if(enrolledCourses.contains(course)) {
+                if (enrolledCourses.contains(course)) {
                         return "Student Already Enrolled";
                 }
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.AuthenticationResponseDTO;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.LoginUserRequestDTO;
 import uk.ac.leedsbeckett.student.domain.dto.userDTOs.RegisterNewUserRequestDTO;
+import uk.ac.leedsbeckett.student.domain.dto.userDTOs.UpdateUserRequestDTO;
 import uk.ac.leedsbeckett.student.services.UserService;
 
 @RestController
@@ -30,5 +31,10 @@ public class AuthController {
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDTO> authenticate(@RequestHeader HttpHeaders header) {
         return ResponseEntity.ok(userService.authenticate(header));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestHeader HttpHeaders header, @RequestBody UpdateUserRequestDTO request) {
+        return ResponseEntity.ok(userService.updateUser(header, request));
     }
 }
