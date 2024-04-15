@@ -173,6 +173,12 @@ public class UserService {
 
                 CourseEntity course = courseRepository.findById(courseId).orElseThrow();
 
+                Set<CourseEntity> enrolledCourses = user.getEnrolledCourses();
+
+                if(enrolledCourses.contains(course)) {
+                        return "Student Already Enrolled";
+                }
+
                 user.getEnrolledCourses().add(course);
                 usersRepository.save(user);
 
