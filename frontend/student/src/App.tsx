@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { IUser } from "./types/user";
 import Courses from "./pages/Courses";
 import Enrollments from "./pages/Enrollments";
-import { ProtectedRoute } from "./AuthGuard";
+import { ProtectedRoute } from "./authGuard";
 import { useEffect } from "react";
 import { setUser } from "./redux/user";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const user: IUser = useSelector((state: any) => state.user.user);
@@ -84,6 +85,10 @@ function App() {
             }
           />
         </Routes>
+      </div>
+
+      <div>
+        <Toaster />
       </div>
     </>
   );

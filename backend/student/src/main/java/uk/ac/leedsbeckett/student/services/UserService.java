@@ -196,6 +196,8 @@ public class UserService {
                 return "User updated successfully";
         }
 
+
+
         public String enrollStudentIntoCourse(HttpHeaders header, String courseId) {
                 // Get the user details from the JWT token
                 List<String> jwt = header.get("Authorization");
@@ -264,6 +266,5 @@ public class UserService {
                 String checkBalanceURI = financeBaseURI + "/api/invoice/balance/" + studentEmail;
 
                 return restTemplate.getForObject(checkBalanceURI, GetBalanceDTO.class);
-
         }
 }

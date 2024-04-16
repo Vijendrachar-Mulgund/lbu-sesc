@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { Course } from "../../types/courses";
 import { useDispatch, useSelector } from "react-redux";
 import { setCourses } from "../../redux/courses";
+import toast from "react-hot-toast";
 
 export default function Courses() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -67,6 +68,30 @@ export default function Courses() {
   const handleCourseModelClose = () => {
     setSelectedCourse(null);
     onOpenChange();
+  };
+
+  const handleEnroll = async (course: Course | null, onClose: () => void) => {
+    const enrollURI = import.meta.env.VITE_STUDENT_API_URL + "/api/user/enroll/" + course?.id;
+    const token: String | null = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(enrollURI, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const message = await response.text();
+
+      toast.success(message);
+
+      onClose();
+    } catch (error: any) {
+      toast.error(error.message);
+      console.error(error || "Failed to enroll");
+    }
   };
 
   return (
@@ -139,7 +164,12 @@ export default function Courses() {
                   <Button color="danger" variant="light" onPress={onClose}>
                     Close
                   </Button>
-                  <Button color="primary" onPress={onClose}>
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      handleEnroll(selectedCourse, onClose);
+                    }}
+                  >
                     Enroll
                   </Button>
                 </ModalFooter>

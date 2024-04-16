@@ -1,8 +1,79 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IUser } from "../../types/user";
+import { useEffect, useState } from "react";
+import { setEnrolledCourses } from "../../redux/courses";
+
+interface IFees {
+  balance: number | undefined;
+  currency: string;
+  message: string;
+  status: string;
+}
 
 export default function Profile() {
+  const [feesDue, setFeesDue] = useState<IFees | null>(null);
   const user: IUser = useSelector((state: any) => state.user.user);
+
+  const dispatch = useDispatch();
+  const enrolledCourses = useSelector((state: any) => state.courses.enrolledCourses);
+
+  useEffect(() => {
+    fetchEnrolledCourses();
+    fetchFeesDue();
+  }, []);
+
+  const fetchFeesDue = async () => {
+    const feesURI = import.meta.env.VITE_STUDENT_API_URL + "/api/user/check-balance";
+    const token: String | null = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(feesURI, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (responseData.status !== "success") {
+        throw new Error(responseData.message);
+      }
+
+      setFeesDue(responseData);
+      return responseData?.feesDue;
+    } catch (error: any) {
+      console.error(error || "Failed to fetch fees due");
+    }
+  };
+
+  const fetchEnrolledCourses = async () => {
+    const coursesURI = import.meta.env.VITE_STUDENT_API_URL + "/api/user/enrolled-courses";
+    const token: String | null = localStorage.getItem("token");
+
+    try {
+      const response = await fetch(coursesURI, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (responseData.status !== "success") {
+        throw new Error(responseData.message);
+      }
+
+      console.log("Test --- ", responseData);
+
+      dispatch(setEnrolledCourses(responseData?.enrolledCourses));
+    } catch (error: any) {
+      console.error(error || "Failed to sign in");
+    }
+  };
 
   return (
     <div>
@@ -34,11 +105,15 @@ export default function Profile() {
               </div>
               <div className="px-4 py-6 flex justify-between sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Fees Due</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">None</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">
+                  {feesDue?.balance ? `${feesDue.balance} ${feesDue.currency}` : "No fees due"}
+                </dd>
               </div>
               <div className="px-4 py-6 flex justify-between sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Graduation Status</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">This is Test</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">
+                  {!feesDue?.balance && enrolledCourses?.length ? "Eligible" : "Not Eligible"}
+                </dd>
               </div>
             </dl>
           </div>

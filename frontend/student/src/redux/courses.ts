@@ -13,7 +13,7 @@ const coursesSlices = createSlice({
       state.courses = action.payload;
     },
     setEnrolledCourses: (state, action) => {
-      state.courses = action.payload;
+      state.enrolledCourses = action.payload;
     },
 
     removeCourses: (state) => {
