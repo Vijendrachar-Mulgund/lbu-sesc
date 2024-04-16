@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { IUser } from "./types/user";
 import { ProtectedRoute } from "./authGuard";
 import Login from "./pages/Login";
-// import Invoices from "./pages/Invoices";
 import { Toaster } from "react-hot-toast";
 import Invoices from "./pages/Invoices";
 
@@ -27,7 +26,7 @@ function App() {
 
   const fetchUser = async (token: String) => {
     try {
-      const userURI = import.meta.env.VITE_STUDENT_API_URL + "/api/auth/authenticate";
+      const userURI = import.meta.env.VITE_FINANCE_API_URL + "/api/auth/authenticate";
       const response = await fetch(userURI, {
         method: "POST",
         headers: {
