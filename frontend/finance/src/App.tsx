@@ -26,6 +26,7 @@ function App() {
 
   const fetchUser = async (token: String) => {
     try {
+      // Fetch user data
       const userURI = import.meta.env.VITE_FINANCE_API_URL + "/api/auth/authenticate";
       const response = await fetch(userURI, {
         method: "POST",
