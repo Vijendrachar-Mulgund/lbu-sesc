@@ -96,10 +96,11 @@ export default function Login() {
             <OtpInput
               inputStyle={{
                 borderRadius: "5px",
-                border: "1px solid #ccc",
+                border: "1px solid #F4F4F5",
                 marginRight: "10px",
                 width: "40px",
                 height: "50px",
+                background: "#F4F4F5",
               }}
               inputType="password"
               value={pin}
@@ -114,15 +115,6 @@ export default function Login() {
               Login
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?
-              <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
-                Register
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </>

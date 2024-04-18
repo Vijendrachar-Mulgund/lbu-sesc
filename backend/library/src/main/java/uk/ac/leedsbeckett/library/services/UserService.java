@@ -240,6 +240,8 @@ public class UserService {
 
                 long pastDueDate = ChronoUnit.DAYS.between(due, today);
 
+                String responseText = "The book returned successfully! No Fine required!";
+
                 if (pastDueDate > 0) {
                         Double fineAmount = finePerDay * pastDueDate;
                         // Create an Invoice for the same
@@ -255,6 +257,8 @@ public class UserService {
                                         .build();
 
                         restTemplate.postForObject(createNewFinanceInvoiceURI, newInvoice, String.class);
+
+                        responseText = "Book returned successfully, Fine of " + fineAmount + " GBP" + " for " + pastDueDate + " days";
                 }
 
                 borrowedBook.setReturnedDate(new Date());
@@ -262,7 +266,7 @@ public class UserService {
                 book.setCopies(book.getCopies() + 1);
                 booksRepository.save(book);
 
-                return "The book returned successfully";
+                return responseText;
         }
 
         public GetAllBorrowedBooks getBorrowedBooks(HttpHeaders header) {

@@ -78,10 +78,11 @@ function ChangePIN() {
           <OtpInput
             inputStyle={{
               borderRadius: "5px",
-              border: "1px solid #ccc",
+              border: "1px solid #F4F4F5",
               marginRight: "10px",
               width: "40px",
               height: "50px",
+              background: "#F4F4F5",
             }}
             inputType="password"
             value={pin}
@@ -96,10 +97,11 @@ function ChangePIN() {
           <OtpInput
             inputStyle={{
               borderRadius: "5px",
-              border: "1px solid #ccc",
+              border: "1px solid #F4F4F5",
               marginRight: "10px",
               width: "40px",
               height: "50px",
+              background: "#F4F4F5",
             }}
             inputType="password"
             value={confirmPin}
