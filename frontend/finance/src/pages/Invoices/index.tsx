@@ -24,6 +24,7 @@ export default function Courses() {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
   const invoices = useSelector((state: any) => state.user.invoices);
+  const user = useSelector((state: any) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -99,8 +100,13 @@ export default function Courses() {
 
   return (
     <div>
-      <h1 className="text-4xl text-center font-bold my-20">All Your Invoices</h1>
+      <h1 className="text-4xl text-center font-bold my-10">Hello, {`${user?.firstname} ${user?.lastname}`}</h1>
 
+      <h3 className="text-xl text-center my-10">
+        Email: {`${user?.email}`} | Student ID: {`${user.studentId}`}
+      </h3>
+
+      <h1 className="text-4xl text-center font-bold my-10">Invoices</h1>
       <div className="m-auto flex justify-center max-w-screen-2xl">
         <div className="w-full">
           <Table isStriped aria-label="Example static collection table">
@@ -172,7 +178,7 @@ export default function Courses() {
                   <br />
 
                   <h1 className="font-bold">Due Date</h1>
-                  <p>{Date(selectedInvoice?.createdAt)}</p>
+                  <p>{selectedInvoice?.createdAt ? new Date(selectedInvoice?.createdAt).toUTCString() : ""}</p>
                 </ModalBody>
                 <ModalFooter>
                   <Button color="danger" variant="light" onPress={onClose}>

@@ -8,6 +8,6 @@ export interface Invoice {
   type: string;
   title: string;
   status: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

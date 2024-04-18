@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 export default function Enrollments() {
   const borrowedBooks = useSelector((state: any) => state.book.borrowedBooks);
+  const user = useSelector((state: any) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -70,7 +71,13 @@ export default function Enrollments() {
 
   return (
     <div>
-      <h1 className="text-4xl text-center font-bold my-20">Borrowed Books</h1>
+      <h1 className="text-4xl text-center font-bold my-10">Hello, {`${user?.firstname} ${user?.lastname}`}</h1>
+
+      <h3 className="text-xl text-center my-10">
+        Email: {`${user?.email}`} | Student ID: {`${user.studentId}`}
+      </h3>
+
+      <h1 className="text-4xl text-center font-bold my-10">Borrowed Books</h1>
 
       <div className="m-auto flex justify-center max-w-screen-2xl">
         <Table isStriped aria-label="Example static collection table">
