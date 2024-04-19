@@ -35,11 +35,20 @@ services:
       SPRING_JPA_HIBERNATE_DDL-AUTO: ${SPRING_DATA_JPA_DDL}
       SPRING_JPA_DATABASE: ${SPRING_DATA_JPA_DATABASE}
       JWT_SECRET: ${JWT_SECRET}
+      URI_BASE_LIBRARY: ${URI_BASE_LIBRARY}
+      URI_BASE_FINANCE: ${URI_BASE_FINANCE}
     volumes:
       - student_api:/app
+    networks:
+      - default
 
 volumes:
   postgres_student_data:
     driver: local
   student_api:
     driver: local
+
+networks:
+  default:
+    external:
+      name: lbu-sesc

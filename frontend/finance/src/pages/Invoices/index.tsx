@@ -146,7 +146,7 @@ export default function Courses() {
                 : []}
             </TableBody>
           </Table>
-          {!invoices?.length ? <p className="text-center text-2xl font-bold my-20">No Courses Available</p> : ""}
+          {!invoices?.length ? <p className="text-center text-2xl font-bold my-20">No Invoices Available</p> : ""}
         </div>
 
         <Modal size="2xl" isOpen={isOpen} onOpenChange={handleCourseModelClose}>

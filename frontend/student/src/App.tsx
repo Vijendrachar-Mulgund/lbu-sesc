@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IUser } from "./types/user";
 import Courses from "./pages/Courses";
 import Enrollments from "./pages/Enrollments";
-import { ProtectedRoute } from "./authGuard";
+import { ProtectedRoute } from "./AuthGuard";
 import { useEffect } from "react";
 import { setUser } from "./redux/user";
 import { Toaster } from "react-hot-toast";
