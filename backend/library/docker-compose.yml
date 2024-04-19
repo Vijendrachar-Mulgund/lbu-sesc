@@ -40,6 +40,16 @@ services:
     networks:
       - default
 
+  web:
+    container_name: library-web
+    build:
+      context: ../../frontend/library
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      VITE_LIBRARY_API_URL: ${VITE_LIBRARY_API_URL}
+
 volumes:
   postgres_library_data:
     driver: local

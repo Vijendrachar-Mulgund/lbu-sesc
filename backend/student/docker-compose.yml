@@ -42,6 +42,16 @@ services:
     networks:
       - default
 
+  web:
+    container_name: student-web
+    build:
+      context: ../../frontend/student
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_STUDENT_API_URL: ${VITE_STUDENT_API_URL}
+
 volumes:
   postgres_student_data:
     driver: local
