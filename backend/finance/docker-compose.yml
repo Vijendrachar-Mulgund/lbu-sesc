@@ -22,16 +22,21 @@ services:
     environment:
       PORT: ${PORT}
       MONGO_DB_CONNECTION_URL: ${MONGO_DB_CONNECTION_URL_DOCKER}
-      MONGO_DB_CONNECTION_PASSWORD: ${MONGO_DB_CONNECTION_PASSWORD}
       MONGO_DB_NAME: ${MONGO_DB_NAME}
-      MONGO_DB_USER_NAME: ${MONGO_DB_USER_NAME}
       PASSWORD_SALT_ROUNDS: ${PASSWORD_SALT_ROUNDS}
       JWT_SECRET: ${JWT_SECRET}
     volumes:
       - finance_api:/app
+    networks:
+      - default
 
 volumes:
   mongo_finance_db:
     driver: local
   finance_api:
     driver: local
+
+networks:
+  default:
+    external:
+      name: lbu-sesc

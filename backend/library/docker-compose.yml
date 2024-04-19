@@ -37,9 +37,16 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     volumes:
       - library_api:/app
+    networks:
+      - default
 
 volumes:
   postgres_library_data:
     driver: local
   library_api:
     driver: local
+
+networks:
+  default:
+    external:
+      name: lbu-sesc
