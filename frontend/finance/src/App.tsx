@@ -69,7 +69,11 @@ function App() {
       </div>
 
       <div>
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            duration: 10000,
+          }}
+        />
       </div>
     </>
   );
