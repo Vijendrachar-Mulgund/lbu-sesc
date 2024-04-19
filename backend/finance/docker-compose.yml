@@ -30,6 +30,16 @@ services:
     networks:
       - default
 
+  web:
+    container_name: finance-web
+    build:
+      context: ../../frontend/finance
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    environment:
+      VITE_FINANCE_API_URL: ${VITE_FINANCE_API_URL}
+
 volumes:
   mongo_finance_db:
     driver: local

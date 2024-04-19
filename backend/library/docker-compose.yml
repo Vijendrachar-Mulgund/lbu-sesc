@@ -35,10 +35,21 @@ services:
       SPRING_JPA_HIBERNATE_DDL-AUTO: ${SPRING_DATA_JPA_DDL}
       SPRING_JPA_DATABASE: ${SPRING_DATA_JPA_DATABASE}
       JWT_SECRET: ${JWT_SECRET}
+      URI_BASE_FINANCE: ${URI_BASE_FINANCE}
     volumes:
       - library_api:/app
     networks:
       - default
+
+  web:
+    container_name: library-web
+    build:
+      context: ../../frontend/library
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    environment:
+      VITE_LIBRARY_API_URL: ${VITE_LIBRARY_API_URL}
 
 volumes:
   postgres_library_data:
