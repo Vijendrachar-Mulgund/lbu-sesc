@@ -1,0 +1,15 @@
+INSERT INTO books(isbn,title,author,year,copies) VALUES (2005018,'Clara Callan','Richard Bruce Wright',2001,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (3442446,'Tage der Unschuld.','Richard North Patterson',2000,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (3442410,'Sturmzeit. Roman.','Charlotte Link',1991,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (3454028,'Airframe','Michael Crichton',1997,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (6898211,'Flood : Mississippi 1927','Kathleen Duey',1998,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (1558746,'A Second Chicken Soup for the Woman''s Soul (Chicken Soup for the Soul Series)','Jack Canfield',1998,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (1567407,'The Witchfinder (Amos Walker Mystery Series)','Loren D. Estleman',1998,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (1575669,'More Cunning Than Man: A Social History of Rats and Man','Robert Hendrickson',1999,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (1881320,'Goodbye to the Buttermilk Sky','Julia Oliver',1994,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (3991357,'The Kitchen God''s Wife','Amy Tan',1991,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (4251764,'What If?: The World''s Foremost Military Historians Imagine What Might Have Been','Robert Cowley',2000,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (6718704,'PLEADING GUILTY','Scott Turow',1993,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (6794256,'Under the Black Flag: The Romance and the Reality of Life Among the Pirates','David Cordingly',1996,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (7432267,'Where You''ll Find Me: And Other Stories','Ann Beattie',2002,3);
+INSERT INTO books(isbn,title,author,year,copies) VALUES (7710746,'Nights Below Station Street','David Adams Richards',1988,3);

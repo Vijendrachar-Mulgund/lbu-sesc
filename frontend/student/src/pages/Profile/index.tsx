@@ -142,6 +142,10 @@ export default function Profile() {
     }
   };
 
+  const getDate = (date: string) => {
+    return `${new Date(date).toUTCString()}`;
+  };
+
   return (
     <div>
       <h1 className="text-4xl text-center font-bold my-20">Welcome, {user.firstname}!</h1>
@@ -167,7 +171,7 @@ export default function Profile() {
               </div>
               <div className="px-4 py-6 flex justify-between sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Admission Date</dt>
-                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">{user.createdAt}</dd>
+                <dd className="mt-1 text-sm leading-6 text-gray-700  sm:mt-0">{getDate(`${user.createdAt}`)}</dd>
               </div>
               <div className="px-4 py-6 flex justify-between sm:px-0">
                 <dt className="text-sm font-medium leading-6 text-gray-900">Email address</dt>
