@@ -40,14 +40,11 @@ public class UserEntity implements UserDetails {
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "enrolled_courses",
-            joinColumns = {
-                    @JoinColumn(name = "student_id", referencedColumnName = "id")
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "course_id", referencedColumnName = "id")
-            }
+    @JoinTable(name = "enrolled_courses", joinColumns = {
+            @JoinColumn(name = "student_id", referencedColumnName = "id")
+    }, inverseJoinColumns = {
+            @JoinColumn(name = "course_id", referencedColumnName = "id")
+    }
 
     )
     @JsonManagedReference
@@ -93,5 +90,15 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    // For Test
+    public UserEntity(String id, String email, String studentId, String firstname, String lastname, String password) {
+        this.id = id;
+        this.studentId = studentId;
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.password = password;
     }
 }
