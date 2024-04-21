@@ -34,6 +34,10 @@ export default function Header({ user }: IHeaderProps) {
               <Link to="/">Invoices</Link>
             </NavbarItem>
 
+            <NavbarItem isActive={location.pathname === "/search"}>
+              <Link to="/search">Search Invoice by ID</Link>
+            </NavbarItem>
+
             <NavbarItem>
               <Button color="danger" onClick={handleUserLogout} size="md">
                 Logout

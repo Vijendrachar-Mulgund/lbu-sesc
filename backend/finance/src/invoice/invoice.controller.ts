@@ -114,6 +114,33 @@ export class InvoiceController {
   }
 
   @UseGuards(AuthGuard)
+  @Get(':invoiceId')
+  async getInvoice(@Req() request: Request, @Res() response: Response) {
+    try {
+      const invoiceId: string = request.params.invoiceId;
+
+      const studentEmail: string = request.body.token.sub;
+
+      const invoice = await this.invoiceService.getInvoice(
+        invoiceId,
+        studentEmail,
+      );
+
+      if (!invoice) {
+        throw new Error('Invoice not found');
+      }
+
+      response.status(HttpStatus.OK).json({
+        status: 'success',
+        message: 'Invoice retrieved successfully',
+        invoice,
+      });
+    } catch (error) {
+      restError(response, error, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @UseGuards(AuthGuard)
   @Post('pay/:invoiceId')
   async payInvoice(@Req() request: Request, @Res() response: Response) {
     try {

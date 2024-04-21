@@ -12,28 +12,24 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Input,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setInvoices } from "../../redux/user";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+
 import toast from "react-hot-toast";
 import { Invoice } from "../../types/invoices";
 
-export default function Invoices() {
+export default function SearchInvoices() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [searchInvoiceID, setSearchInvoiceID] = useState<string>("");
+  const [searchedInvoices, setSearchedInvoices] = useState<Invoice | null>(null);
 
-  const invoices = useSelector((state: any) => state.user.invoices);
   const user = useSelector((state: any) => state.user.user);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    fetchInvoices();
-  }, []);
-
   const fetchInvoices = async () => {
-    const invoiceURI = import.meta.env.VITE_FINANCE_API_URL + "/api/invoice";
+    const invoiceURI = import.meta.env.VITE_FINANCE_API_URL + "/api/invoice/" + searchInvoiceID;
     const token: String | null = localStorage.getItem("token");
 
     try {
@@ -51,11 +47,13 @@ export default function Invoices() {
         throw new Error(responseData.message);
       }
 
+      console.log(responseData);
+
       toast.success(responseData.message);
-      dispatch(setInvoices(responseData?.invoices));
+      setSearchedInvoices(responseData?.invoice);
     } catch (error: any) {
       toast.error(error.message);
-      console.error(error || "Failed to sign in");
+      console.error(error || "No Invoices Found");
     }
   };
 
@@ -98,6 +96,10 @@ export default function Invoices() {
     }
   };
 
+  const handleSearch = async () => {
+    fetchInvoices();
+  };
+
   return (
     <div>
       <h1 className="text-4xl text-center font-bold my-10">Hello, {`${user?.firstname} ${user?.lastname}`}</h1>
@@ -106,7 +108,22 @@ export default function Invoices() {
         Email: {`${user?.email}`} | Student ID: {`${user.studentId}`}
       </h3>
 
-      <h1 className="text-4xl text-center font-bold my-10">Invoices</h1>
+      <h1 className="text-4xl text-center font-bold my-10">Search Invoice by ID</h1>
+
+      <div className="m-auto flex items-center justify-center max-w-screen-2xl">
+        <Input
+          onChange={(event: any) => setSearchInvoiceID(event.target.value)}
+          type="text"
+          label="Invoice ID"
+          placeholder="Please enter your Invoice ID"
+        />
+        <Button onClick={handleSearch} size="lg" color="primary" className="ml-10">
+          Search
+        </Button>
+      </div>
+
+      <br />
+
       <div className="m-auto flex justify-center max-w-screen-2xl">
         <div className="w-full">
           <Table isStriped aria-label="Example static collection table">
@@ -120,33 +137,31 @@ export default function Invoices() {
               <TableColumn minWidth="100">Action</TableColumn>
             </TableHeader>
             <TableBody>
-              {invoices?.length
-                ? invoices?.map((invoice: Invoice, index: number) => {
-                    return (
-                      <TableRow key={invoice._id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{invoice._id}</TableCell>
-                        <TableCell>{invoice.title}</TableCell>
-                        <TableCell>{invoice.status}</TableCell>
-                        <TableCell>{invoice.type}</TableCell>
-                        <TableCell>{`${invoice.currency} ${invoice.amount}`}</TableCell>
-                        <TableCell>
-                          <Button
-                            disabled={invoice.status === "PAID"}
-                            isDisabled={invoice.status === "PAID"}
-                            onClick={() => handleInvoiceModal(invoice)}
-                            color="primary"
-                          >
-                            Pay
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                : []}
+              {searchedInvoices?._id ? (
+                <TableRow key={searchedInvoices._id}>
+                  <TableCell>{1}</TableCell>
+                  <TableCell>{searchedInvoices._id}</TableCell>
+                  <TableCell>{searchedInvoices.title}</TableCell>
+                  <TableCell>{searchedInvoices.status}</TableCell>
+                  <TableCell>{searchedInvoices.type}</TableCell>
+                  <TableCell>{`${searchedInvoices.currency} ${searchedInvoices.amount}`}</TableCell>
+                  <TableCell>
+                    <Button
+                      disabled={searchedInvoices.status === "PAID"}
+                      isDisabled={searchedInvoices.status === "PAID"}
+                      onClick={() => handleInvoiceModal(searchedInvoices)}
+                      color="primary"
+                    >
+                      Pay
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                []
+              )}
             </TableBody>
           </Table>
-          {!invoices?.length ? <p className="text-center text-2xl font-bold my-20">No Invoices Available</p> : ""}
+          {!searchedInvoices?._id ? <p className="text-center text-2xl font-bold my-20">No Invoices Available</p> : ""}
         </div>
 
         <Modal size="2xl" isOpen={isOpen} onOpenChange={handleCourseModelClose}>

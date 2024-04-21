@@ -48,4 +48,10 @@ export class InvoiceService {
       .exec();
     return updatedInvoice;
   }
+
+  getInvoice(invoiceId: string, studentEmail: string): Promise<Invoice> {
+    return this.invoiceModel
+      .findOne({ _id: invoiceId, email: studentEmail })
+      .exec();
+  }
 }

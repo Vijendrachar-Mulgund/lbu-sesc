@@ -8,6 +8,7 @@ import { ProtectedRoute } from "./authGuard";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import Invoices from "./pages/Invoices";
+import SearchInvoices from "./pages/SearchInvoice";
 
 function App() {
   const user: IUser = useSelector((state: any) => state.user.user);
@@ -62,6 +63,15 @@ function App() {
             element={
               <ProtectedRoute user={user}>
                 <Invoices />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute user={user}>
+                <SearchInvoices />
               </ProtectedRoute>
             }
           />
