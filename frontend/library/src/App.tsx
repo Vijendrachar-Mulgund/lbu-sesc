@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { setUser } from "./redux/user";
 import { Toaster } from "react-hot-toast";
 import Books from "./pages/Books";
+import SearchBook from "./pages/SearchBook";
 
 function App() {
   const user: IUser = useSelector((state: any) => state.user.user);
@@ -71,8 +72,16 @@ function App() {
             path="/books"
             element={
               <ProtectedRoute user={user}>
-                {/* <div>Books</div> */}
                 <Books />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute user={user}>
+                <SearchBook />
               </ProtectedRoute>
             }
           />

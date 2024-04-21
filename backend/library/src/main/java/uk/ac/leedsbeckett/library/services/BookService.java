@@ -28,7 +28,7 @@ public class BookService {
         BookEntity book = booksRepository.findByIsbn(isbn).orElseThrow();
 
         return GetBookDTO.builder()
-                .status("status")
+                .status("success")
                 .message("Book received successfully")
                 .book(book)
                 .build();

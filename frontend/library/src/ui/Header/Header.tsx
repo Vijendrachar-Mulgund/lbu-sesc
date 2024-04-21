@@ -36,6 +36,9 @@ export default function Header({ user }: IHeaderProps) {
             <NavbarItem isActive={location.pathname === "/books"}>
               <Link to="/books">Books</Link>
             </NavbarItem>
+            <NavbarItem isActive={location.pathname === "/search"}>
+              <Link to="/search">Search Book by ISBN</Link>
+            </NavbarItem>
 
             <NavbarItem>
               <Button color="danger" onClick={handleUserLogout} size="md">

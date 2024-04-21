@@ -1,23 +1,14 @@
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button } from "@nextui-org/react";
-import { useEffect } from "react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input } from "@nextui-org/react";
+import { useState } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
-import { setBooks } from "../../redux/books";
 import toast from "react-hot-toast";
 
-export default function Books() {
-  const books = useSelector((state: any) => state.book.books);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!books || !books.length) {
-      fetchBooks();
-    }
-  }, []);
+export default function Courses() {
+  const [searchedBooks, setSearchedBooks] = useState<any>(null);
+  const [searchText, setSearchText] = useState("");
 
   const fetchBooks = async () => {
-    const booksURI = import.meta.env.VITE_LIBRARY_API_URL + "/api/book";
+    const booksURI = import.meta.env.VITE_LIBRARY_API_URL + "/api/book/" + searchText;
     const token: String | null = localStorage.getItem("token");
 
     try {
@@ -35,7 +26,10 @@ export default function Books() {
         throw new Error(responseData.message);
       }
 
-      dispatch(setBooks(responseData?.books));
+      console.log(responseData);
+
+      toast.success("Book fetched successfully");
+      setSearchedBooks(responseData.book);
     } catch (error: any) {
       console.error(error || "Failed to sign in");
     }
@@ -66,7 +60,22 @@ export default function Books() {
 
   return (
     <div>
-      <h1 className="text-4xl text-center font-bold my-20">All Available Books</h1>
+      <h1 className="text-4xl text-center font-bold my-20">Search Book by ISBN</h1>
+
+      <div className="m-auto flex items-center justify-center max-w-screen-2xl">
+        <Input
+          onChange={(event: any) => setSearchText(event.target.value)}
+          type="text"
+          label="Search"
+          placeholder="Please enter the ISBN"
+        />
+
+        <Button size="lg" onClick={fetchBooks} color="primary" className="ml-10">
+          Search
+        </Button>
+      </div>
+
+      <br />
 
       <div className="m-auto flex justify-center max-w-screen-2xl">
         <div className="w-full">
@@ -81,28 +90,26 @@ export default function Books() {
               <TableColumn minWidth="100">Action</TableColumn>
             </TableHeader>
             <TableBody>
-              {books?.length
-                ? books?.map((book: any, index: number) => {
-                    return (
-                      <TableRow key={book.id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{book.isbn}</TableCell>
-                        <TableCell>{book.title}</TableCell>
-                        <TableCell>{book.author}</TableCell>
-                        <TableCell>{book.year}</TableCell>
-                        <TableCell>{book.copies}</TableCell>
-                        <TableCell>
-                          <Button onClick={() => handleBorrowBook(book)} color="primary">
-                            Borrow
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                : []}
+              {searchedBooks?.isbn ? (
+                <TableRow key={searchedBooks.id}>
+                  <TableCell>{1}</TableCell>
+                  <TableCell>{searchedBooks.isbn}</TableCell>
+                  <TableCell>{searchedBooks.title}</TableCell>
+                  <TableCell>{searchedBooks.author}</TableCell>
+                  <TableCell>{searchedBooks.year}</TableCell>
+                  <TableCell>{searchedBooks.copies}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleBorrowBook(searchedBooks)} color="primary">
+                      Borrow
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                []
+              )}
             </TableBody>
           </Table>
-          {!books?.length ? <p className="text-center text-2xl font-bold my-20">No Books Available</p> : ""}
+          {!searchedBooks?.length ? <p className="text-center text-2xl font-bold my-20">No Books Available</p> : ""}
         </div>
       </div>
     </div>
