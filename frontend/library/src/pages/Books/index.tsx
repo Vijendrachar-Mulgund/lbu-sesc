@@ -54,12 +54,20 @@ export default function Books() {
         },
       });
 
+      if (response.status !== 200) {
+        const responseError = await response.json();
+        if (responseError.status === "error") {
+          toast.error(responseError.error);
+          return;
+        }
+      }
+
       const responseData = await response.text();
 
       toast.success(responseData);
       fetchBooks();
     } catch (error: any) {
-      toast.error("Failed to borrow book");
+      toast.error(error.message || "Failed to borrow book");
       console.error(error || "Failed to sign in");
     }
   };

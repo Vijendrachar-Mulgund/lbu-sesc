@@ -25,7 +25,7 @@ function ChangePIN() {
 
   const submitPin = async () => {
     if (pin.length !== 6 || confirmPin.length !== 6 || pin !== confirmPin) {
-      setError("Invalid PIN! Please enter a valid 6 digit PIN");
+      setError("PIN does not match. Please try again.");
       return;
     }
 

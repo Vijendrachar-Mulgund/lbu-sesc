@@ -109,7 +109,7 @@ export default function Courses() {
               )}
             </TableBody>
           </Table>
-          {!searchedBooks?.length ? <p className="text-center text-2xl font-bold my-20">No Books Available</p> : ""}
+          {!searchedBooks?.isbn ? <p className="text-center text-2xl font-bold my-20">No Books Available</p> : ""}
         </div>
       </div>
     </div>
