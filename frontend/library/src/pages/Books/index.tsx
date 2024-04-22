@@ -11,9 +11,7 @@ export default function Books() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!books || !books.length) {
-      fetchBooks();
-    }
+    fetchBooks();
   }, []);
 
   const fetchBooks = async () => {
