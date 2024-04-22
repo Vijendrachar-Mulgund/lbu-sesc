@@ -45,6 +45,15 @@ export default function Enrollments() {
     return `${new Date(date).toUTCString()}`;
   };
 
+  const getPastDueDate = (dueDate: string) => {
+    const date1: any = new Date(dueDate);
+    const date2: any = new Date(Date.now());
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays - 1;
+  };
+
   const handleReturnBook = async (book: any) => {
     const returnBookURI = import.meta.env.VITE_LIBRARY_API_URL + "/api/user/return/" + book.id;
     const token: String | null = localStorage.getItem("token");
@@ -89,6 +98,7 @@ export default function Enrollments() {
             <TableColumn minWidth="100">Borrow Date</TableColumn>
             <TableColumn minWidth="100">Due Date</TableColumn>
             <TableColumn minWidth="100">Return Date</TableColumn>
+            <TableColumn minWidth="100">Has past due date</TableColumn>
             <TableColumn minWidth="100">Action</TableColumn>
           </TableHeader>
           <TableBody>
@@ -103,6 +113,9 @@ export default function Enrollments() {
                       <TableCell>{getDate(book?.borrowedDate)}</TableCell>
                       <TableCell>{getDate(book?.dueDate)}</TableCell>
                       <TableCell>{book?.returnedDate ? getDate(book?.returnedDate) : "Pending"}</TableCell>
+                      <TableCell>
+                        {getPastDueDate(book?.dueDate) ? getPastDueDate(book?.dueDate) + " days" : "No"}
+                      </TableCell>
                       <TableCell>
                         <Button
                           color="primary"
